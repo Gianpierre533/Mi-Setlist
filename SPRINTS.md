@@ -18,7 +18,7 @@
 
 ## Dependencias detectadas
 
-- Para **HU3 (Guardar Canciones en una Playlist)** necesito antes obligatoriamente implementar la **HU2 (Búsqueda Interactiva de Canciones)** y la **HU1 (Creación de Playlists Personalizadas)**, porque sin resultados que seleccionar ni una lista de destino creada, es imposible ejecutar el flujo de adición.
+- Para **HU3 (Guardar Canciones en una Playlist)** necesito antes obligatoriamente implementar la **HU1 (Búsqueda Interactiva de Canciones)** y la **HU2 (Creación de Playlists Personalizadas)**, porque sin resultados que seleccionar ni una lista de destino creada, es imposible ejecutar el flujo de adición.
 - Para **HU7 (Ordenamiento Personalizado)** y **HU5 (Control de Tiempo y Estadísticas)** necesito antes tener implementada la **HU4 (Visualización del Contenido)**, ya que no se puede ordenar ni calcular estadísticas sobre una interfaz que aún no sabe cómo listar las canciones asignadas.
 
 ---

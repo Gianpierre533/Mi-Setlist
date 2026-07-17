@@ -1,6 +1,6 @@
 ## [2026-07-16] — Descomposición del MVP en HUs
 
-**Para qué:** Derivar mis historias de usuario iniciales a partir del MVP y el contrato técnico.
+**Para qué:** derivar mis historias de usuario.
 
 **Prompt:**
 [CONTEXTO]
@@ -29,13 +29,12 @@ El MVP tiene estas 10 funcionalidades:
 10. Persistir todo en LocalStorage y restaurar al recargar; si los datos están corruptos, la app no se rompe y ofrece “Empezar de cero”.
 
 [TAREA]
-Descompón este MVP en un conjunto de 8 historias de usuario para un único desarrollador, distribuidas idealmente para completarse en 2 sprints de una sesión de clase cada uno.
+Pídele descomponer el MVP en historias de usuario para UNA persona desarrollando en 2 sprints de una sesión cada uno.
 
 [FORMATO]
-Historia de Usuario ("Como [rol] quiero [acción] para [beneficio]") + de 3 a 5 criterios de aceptación por cada una.
+Historia ("Como... quiero... para...") + 3-5 criterios de aceptación.
 
 [RESTRICCIÓN]
-Los criterios de aceptación deben describir únicamente RESULTADOS observables en pantalla por el usuario. No debes mencionar detalles de implementación técnica (por ejemplo, nada de "usar fetch", "guardar en localstorage", "funciones de javascript" o "clases de css"). No agregues ninguna funcionalidad fuera de las 10 del MVP.
+Los criterios describen RESULTADOS observables en pantalla, no implementación. Nada fuera del MVP.
 
-**Resultado:**
-La IA generó una estructura base de 8 Historias de Usuario detalladas que cubren las 10 funcionalidades del MVP. Revisé y audité los criterios de aceptación para asegurar que describan únicamente comportamientos visuales e interactivos en pantalla, guardándolos en HISTORIAS.md.
+**Resultado:** base de mis 8 HUs; ajusté criterios y alcance a mano.

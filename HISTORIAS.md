@@ -4,20 +4,7 @@ Este documento detalla las 8 Historias de Usuario que componen el MVP de la apli
 
 ---
 
-### HU1: Creación de Playlists Personalizadas
-
-**Como** entusiasta de la música,  
-**Quiero** crear una nueva playlist asignándole un nombre propio,  
-**Para** empezar a organizar mis canciones favoritas en listas temáticas.
-
-- **Criterio 1:** En la pantalla se visualiza un formulario con un campo de texto para escribir el nombre de la playlist y un botón para crearla.
-- **Criterio 2:** Al escribir un nombre y presionar el botón de creación, la nueva playlist aparece inmediatamente en la lista de playlists de la pantalla.
-- **Criterio 3:** Si intento crear una playlist con el nombre vacío, se muestra un mensaje de advertencia visual en pantalla y no se crea nada.
-- **Criterio 4:** Si no tengo ninguna playlist creada, la pantalla muestra un mensaje amigable indicando que aún no hay playlists y sugiriendo crear la primera.
-
----
-
-### HU2: Búsqueda Interactiva de Canciones
+### HU1: Búsqueda Interactiva de Canciones
 
 **Como** usuario de la aplicación,  
 **Quiero** buscar canciones introduciendo el nombre de un artista o el título de un tema,  
@@ -28,6 +15,19 @@ Este documento detalla las 8 Historias de Usuario que componen el MVP de la apli
 - **Criterio 3:** Al finalizar la búsqueda con éxito, se despliega una lista de resultados donde cada canción muestra claramente su carátula (imagen), título, nombre del artista y su duración.
 - **Criterio 4:** Si la búsqueda no arroja resultados, se oculta el indicador de carga y se muestra en pantalla un mensaje amigable indicando que no se encontraron coincidencias.
 - **Criterio 5:** Si ocurre un error de conexión durante la búsqueda, se despliega un mensaje de error claro en pantalla explicando que hubo un problema al conectar con el servidor.
+
+---
+
+### HU2: Creación de Playlists Personalizadas
+
+**Como** entusiasta de la música,  
+**Quiero** crear una nueva playlist asignándole un nombre propio,  
+**Para** empezar a organizar mis canciones favoritas en listas temáticas.
+
+- **Criterio 1:** En la pantalla se visualiza un formulario con un campo de texto para escribir el nombre de la playlist y un botón para crearla.
+- **Criterio 2:** Al escribir un nombre y presionar el botón de creación, la nueva playlist aparece inmediatamente en la lista de playlists de la pantalla.
+- **Criterio 3:** Si intento crear una playlist con el nombre vacío, se muestra un mensaje de advertencia visual en pantalla y no se crea nada.
+- **Criterio 4:** Si no tengo ninguna playlist creada, la pantalla muestra un mensaje amigable indicando que aún no hay playlists y sugiriendo crear la primera.
 
 ---
 
