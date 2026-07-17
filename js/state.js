@@ -1,0 +1,1 @@
+export const mensaje = 'Módulos ESM funcionando ✅';

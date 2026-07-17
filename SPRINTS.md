@@ -1,9 +1,9 @@
 ## Sprint 1 (Clase 18) — Meta: Busco una canción y la agrego a una playlist que sobrevive al recargar
 
-- **HU2: Búsqueda Interactiva de Canciones** (Va primero porque casi todo el flujo principal depende de contar con un catálogo de resultados en pantalla).
-- **HU1: Creación de Playlists Personalizadas** (La necesitamos en paralelo para tener un contenedor donde guardar los resultados).
-- **HU3: Guardar Canciones en una Playlist** (Conecta la búsqueda de la HU2 con la playlist de la HU1, permitiendo la persistencia básica inicial).
-- **HU4: Visualización del Contenido de una Playlist** (Permite comprobar en pantalla que las canciones se añadieron correctamente y visualizar sus metadatos básicos).
+- **HU1: Búsqueda Interactiva de Canciones** (Va primero: casi todo depende de tener resultados en pantalla).
+- **HU2: Creación de Playlists Personalizadas** (La estructura para almacenar y listar los contenedores de las canciones).
+- **HU3: Guardar Canciones en una Playlist** (Permite asociar los resultados de la HU1 con la playlist creada en la HU2).
+- **HU4: Visualización del Contenido de una Playlist** (Permite comprobar en pantalla que las canciones y sus fechas se añadieron con éxito).
 
 ---
 
