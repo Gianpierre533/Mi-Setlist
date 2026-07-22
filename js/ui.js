@@ -15,7 +15,7 @@ export function mostrarCargando(contenedor) {
 }
 
 /**
- * HU1 - CRITERIO 5: Muestra un mensaje de error claro en pantalla si falla la conexión.
+ * HU1 - CRITERIO 5: Muestra mensaje de error de conexión.
  */
 export function mostrarError(contenedor, mensaje) {
     contenedor.innerHTML = `
@@ -24,16 +24,11 @@ export function mostrarError(contenedor, mensaje) {
 }
 
 /**
- * HU1 - CRITERIOS 3 y 4 | HU3 - CRITERIOS 1 y 3:
- * Renderiza la lista de canciones con controles para añadir a playlists.
- * @param {HTMLElement} contenedor - Dónde se pintan los resultados.
- * @param {Array} canciones - Lista de objetos Cancion.
- * @param {Array} playlists - Lista de playlists actuales para construir el selector.
+ * HU1 + HU3: Renderiza resultados del buscador.
  */
 export function renderizarResultados(contenedor, canciones, playlists = []) {
     contenedor.innerHTML = '';
 
-    // HU1 - CRITERIO 4: Si la búsqueda no arroja resultados
     if (canciones.length === 0) {
         contenedor.innerHTML = `
             <p class="estado-vacio">
@@ -44,7 +39,6 @@ export function renderizarResultados(contenedor, canciones, playlists = []) {
         return;
     }
 
-    // HU1 - CRITERIO 3: Construcción de la lista de resultados
     const listaHTML = document.createElement('ul');
     listaHTML.className = 'lista-canciones';
 
@@ -54,7 +48,6 @@ export function renderizarResultados(contenedor, canciones, playlists = []) {
         const item = document.createElement('li');
         item.className = 'item-cancion';
         
-        // HU3 - CRITERIO 1 y 3: Construimos el menú desplegable con las playlists disponibles
         let opcionesPlaylists = '';
         if (hayPlaylists) {
             opcionesPlaylists = playlists.map(p => 
@@ -75,9 +68,6 @@ export function renderizarResultados(contenedor, canciones, playlists = []) {
             <div class="cancion-metadatos">
                 <span class="cancion-duracion">${cancion.duracion}</span>
             </div>
-            
-            <!-- HU3 - CRITERIO 1: Control interactivo para seleccionar playlist -->
-            <!-- HU3 - CRITERIO 3: Desactivado si no hay playlists -->
             <div class="cancion-acciones">
                 <select class="select-playlist" ${!hayPlaylists ? 'disabled' : ''}>
                     ${opcionesPlaylists}
@@ -92,14 +82,12 @@ export function renderizarResultados(contenedor, canciones, playlists = []) {
             </div>
         `;
 
-        // Si hay playlists, escuchamos el clic en el botón '+' de esta tarjeta
         if (hayPlaylists) {
             const botonAgregar = item.querySelector('.boton-agregar-cancion');
             const select = item.querySelector('.select-playlist');
 
             botonAgregar.addEventListener('click', () => {
                 const playlistId = select.value;
-                // Disparamos un evento personalizado con los datos de la canción y la playlist
                 const eventoAgregar = new CustomEvent('agregarACancion', {
                     detail: { cancion, playlistId },
                     bubbles: true
@@ -115,9 +103,9 @@ export function renderizarResultados(contenedor, canciones, playlists = []) {
 }
 
 /**
- * HU2 - CRITERIO 4 / CRITERIO 2: Renderiza las playlists en el Sidebar.
+ * HU2 - CRITERIO 2 y 4: Renderiza las playlists en el Sidebar y resalta la activa.
  */
-export function renderizarPlaylists(contenedor, playlists) {
+export function renderizarPlaylists(contenedor, playlists, idPlaylistActiva = null) {
     contenedor.innerHTML = '';
 
     if (playlists.length === 0) {
@@ -135,13 +123,22 @@ export function renderizarPlaylists(contenedor, playlists) {
 
     playlists.forEach(playlist => {
         const item = document.createElement('div');
-        item.className = 'item-playlist';
+        item.className = `item-playlist ${playlist.id === idPlaylistActiva ? 'activa' : ''}`;
         item.dataset.id = playlist.id;
 
         item.innerHTML = `
             <span class="playlist-nombre">📂 ${playlist.nombre}</span>
             <span class="playlist-info-secundaria">${playlist.canciones.length} canciones</span>
         `;
+
+        // Permitimos hacer clic en la playlist para seleccionarla
+        item.addEventListener('click', () => {
+            const eventoSeleccionar = new CustomEvent('seleccionarPlaylist', {
+                detail: { playlistId: playlist.id },
+                bubbles: true
+            });
+            item.dispatchEvent(eventoSeleccionar);
+        });
 
         listaHTML.appendChild(item);
     });
@@ -150,7 +147,7 @@ export function renderizarPlaylists(contenedor, playlists) {
 }
 
 /**
- * HU2 - CRITERIO 3: Advertencia de nombre vacío.
+ * HU2 - CRITERIO 3: Alternar mensaje de advertencia.
  */
 export function alternarAdvertenciaPlaylist(elementoAdvertencia, mostrar) {
     if (mostrar) {
@@ -161,11 +158,9 @@ export function alternarAdvertenciaPlaylist(elementoAdvertencia, mostrar) {
 }
 
 /**
- * HU3 - CRITERIO 2: Muestra un mensaje de confirmación temporal en pantalla.
- * @param {string} mensaje - Texto a mostrar.
+ * HU3 - CRITERIO 2: Toast de notificación.
  */
 export function mostrarToast(mensaje) {
-    // Si ya existe un toast activo, lo removemos
     const toastExistente = document.querySelector('.toast-notificacion');
     if (toastExistente) toastExistente.remove();
 
@@ -175,9 +170,77 @@ export function mostrarToast(mensaje) {
 
     document.body.appendChild(toast);
 
-    // Ocultamos y eliminamos el toast después de 3 segundos
     setTimeout(() => {
         toast.classList.add('ocultar-toast');
         setTimeout(() => toast.remove(), 300);
     }, 3000);
+}
+
+/**
+ * HU4 - CRITERIO 1, 2 y 3: Renderiza el contenido detallado de la playlist activa.
+ * @param {HTMLElement} contenedor - El div de la vista de detalle.
+ * @param {Object} playlist - La playlist seleccionada.
+ */
+export function renderizarDetallePlaylist(contenedor, playlist) {
+    contenedor.innerHTML = '';
+
+    // Encabezado de la playlist
+    const headerHTML = document.createElement('div');
+    headerHTML.className = 'playlist-header-detalle';
+    headerHTML.innerHTML = `
+        <div>
+            <h1>📂 ${playlist.nombre}</h1>
+            <span class="playlist-stats-basicas">${playlist.canciones.length} canciones guardadas</span>
+        </div>
+        <button id="boton-volver-buscador" class="boton-volver-buscador">🔍 Ir al Buscador</button>
+    `;
+    contenedor.appendChild(headerHTML);
+
+    // HU4 - CRITERIO 3: Si la playlist seleccionada está vacía, mostrar mensaje amigable
+    if (playlist.canciones.length === 0) {
+        const estadoVacio = document.createElement('p');
+        estadoVacio.className = 'estado-vacio';
+        estadoVacio.innerHTML = `
+            🎵 Esta playlist está vacía.<br>
+            <small>Usa el buscador para añadir tus primeros temas de música.</small>
+        `;
+        contenedor.appendChild(estadoVacio);
+        return;
+    }
+
+    // HU4 - CRITERIO 1 y 2: Renderizar canciones con título, artista, duración y fecha de adición
+    const listaHTML = document.createElement('ul');
+    listaHTML.className = 'lista-canciones';
+
+    playlist.canciones.forEach(cancion => {
+        const item = document.createElement('li');
+        item.className = 'item-cancion';
+
+        // Formateamos la fecha a formato legible (ej. 21 de jul. de 2026)
+        const fechaFormateada = cancion.fechaAgregada 
+            ? new Date(cancion.fechaAgregada).toLocaleDateString('es-ES', { 
+                day: 'numeric', 
+                month: 'short', 
+                year: 'numeric' 
+              })
+            : 'Fecha desconocida';
+
+        item.innerHTML = `
+            <div class="cancion-info">
+                <img src="${cancion.caratula}" alt="Carátula de ${cancion.titulo}" class="cancion-caratula">
+                <div class="cancion-detalles">
+                    <span class="cancion-titulo">${cancion.titulo}</span>
+                    <span class="cancion-artista">${cancion.artista}</span>
+                </div>
+            </div>
+            <div class="cancion-metadatos-playlist">
+                <span class="cancion-duracion-badge">${cancion.duracion}</span>
+                <span class="cancion-fecha-agregada">Agregado el ${fechaFormateada}</span>
+            </div>
+        `;
+
+        listaHTML.appendChild(item);
+    });
+
+    contenedor.appendChild(listaHTML);
 }

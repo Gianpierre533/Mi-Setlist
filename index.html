@@ -8,7 +8,7 @@
   </head>
   <body>
     <div class="app-layout">
-      <!-- COLUMNA IZQUIERDA: PLAYLISTS (Sidebar estilo Spotify) -->
+      <!-- COLUMNA IZQUIERDA: SIDEBAR (Playlists) -->
       <aside class="sidebar">
         <header class="sidebar-header">
           <h2>🎵 Mi Setlist</h2>
@@ -24,7 +24,7 @@
                 id="input-playlist"
                 placeholder="Nombre de la nueva playlist..."
               />
-              <!-- Mensaje de advertencia visual (HU2 - Criterio 3) -->
+              <!-- HU2 - Criterio 3: Advertencia visual -->
               <span id="advertencia-playlist" class="advertencia-texto ocultar">
                 El nombre no puede estar vacío.
               </span>
@@ -37,38 +37,45 @@
         <section class="playlists-section">
           <h3>Mis Playlists</h3>
           <div id="lista-playlists" class="playlists-container">
-            <!-- Aquí se inyectará la lista o el mensaje de "no hay playlists" -->
+            <!-- Las playlists o mensaje de estado vacío se inyectan aquí -->
           </div>
         </section>
       </aside>
 
-      <!-- COLUMNA DERECHA: BUSCADOR (Main Content) -->
+      <!-- COLUMNA DERECHA: MAIN CONTENT (Doble Vista: Buscador o Playlist) -->
       <main class="main-content">
-        <header class="main-header">
-          <h1>Explorar Catálogo</h1>
-        </header>
+        <!-- VISTA 1: BUSCADOR DE CANCIONES (HU1) -->
+        <div id="vista-buscador">
+          <header class="main-header">
+            <h1>Explorar Catálogo</h1>
+          </header>
 
-        <!-- HU1 - Criterio 1: Buscador de canciones -->
-        <section class="search-section">
-          <form id="formulario-busqueda" class="search-form">
-            <input
-              type="text"
-              id="input-busqueda"
-              placeholder="Escribe un artista o canción..."
-              required
-            />
-            <button type="submit" id="boton-buscar">Buscar</button>
-          </form>
-        </section>
+          <section class="search-section">
+            <form id="formulario-busqueda" class="search-form">
+              <input
+                type="text"
+                id="input-busqueda"
+                placeholder="Escribe un artista o canción..."
+                required
+              />
+              <button type="submit" id="boton-buscar">Buscar</button>
+            </form>
+          </section>
 
-        <!-- HU1 - Resultados, carga y errores -->
-        <section class="results-section">
-          <div id="resultados-busqueda" class="results-container">
-            <p class="estado-vacio">
-              Usa el buscador de arriba para encontrar tus canciones favoritas.
-            </p>
-          </div>
-        </section>
+          <section class="results-section">
+            <div id="resultados-busqueda" class="results-container">
+              <p class="estado-vacio">
+                Usa el buscador de arriba para encontrar tus canciones
+                favoritas.
+              </p>
+            </div>
+          </section>
+        </div>
+
+        <!-- VISTA 2: DETALLE DE PLAYLIST SELECCIONADA (HU4) -->
+        <div id="vista-playlist" class="ocultar">
+          <!-- Se inyecta dinámicamente con JS al seleccionar una playlist -->
+        </div>
       </main>
     </div>
 

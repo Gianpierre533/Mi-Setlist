@@ -532,3 +532,63 @@ body {
   transform: translateY(20px);
   pointer-events: none;
 }
+/* ==========================================================================
+   HU4 - VISUALIZACIÓN DEL CONTENIDO DE UNA PLAYLIST
+   ========================================================================== */
+
+/* Cabecera del detalle de la playlist */
+.playlist-header-detalle {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #282828;
+}
+
+.playlist-header-detalle h1 {
+  margin: 0;
+  font-size: 32px;
+}
+
+.playlist-stats-basicas {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.boton-volver-buscador {
+  background-color: var(--bg-hover);
+  color: var(--text-main);
+  border: 1px solid #3d3d3d;
+  padding: 8px 16px;
+  border-radius: 500px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.boton-volver-buscador:hover {
+  background-color: #383838;
+}
+
+/* --------------------------------------------------------------------------
+   HU4 - CRITERIO 2: Estructura de canción con título, artista, duración y fecha
+   -------------------------------------------------------------------------- */
+.cancion-fecha-agregada {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.cancion-metadatos-playlist {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.cancion-duracion-badge {
+  font-weight: bold;
+  font-size: 14px;
+  color: var(--text-main);
+}
