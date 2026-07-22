@@ -1,120 +1,315 @@
 /* ==========================================================================
-   ESTILOS GENERALES (Estructura Base)
+   VARIABLES Y ESTILOS GENERALES (Estructura Base)
    ========================================================================== */
+:root {
+  --bg-dark: #121212;
+  --bg-sidebar: #000000;
+  --bg-card: #181818;
+  --bg-hover: #282828;
+  --brand-green: #1db954;
+  --brand-green-hover: #1ed760;
+  --text-main: #ffffff;
+  --text-muted: #b3b3b3;
+  --danger: #ff4d4d;
+}
+
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #121212; /* Fondo oscuro estilo Spotify */
-  color: #ffffff;
+  font-family: "Segoe UI", Tahoma, Verdana, sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
   margin: 0;
   padding: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Diseño de dos columnas para organizar la pantalla de forma dividida */
+.app-layout {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.app-header {
-  padding: 20px;
-  text-align: center;
-  border-bottom: 1px solid #282828;
-  width: 100%;
-  max-width: 600px;
-}
-
-.app-container {
-  width: 90%;
-  max-width: 600px;
-  margin-top: 20px;
+  height: 100vh;
+  width: 100vw;
 }
 
 /* ==========================================================================
-   FORMULARIO DE BÚSQUEDA (Criterio 1)
+   COLUMNA IZQUIERDA: SIDEBAR (Playlists)
    ========================================================================== */
+.sidebar {
+  width: 320px;
+  background-color: var(--bg-sidebar);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box;
+  border-right: 1px solid #282828;
+}
+
+.sidebar-header h2 {
+  margin: 0 0 20px 0;
+  font-size: 22px;
+}
+
+.playlist-creator h3,
+.playlists-section h3 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   HU2 - CRITERIO 1: Formulario con campo de texto y botón para crear playlist
+   -------------------------------------------------------------------------- */
+.playlist-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.playlist-form input {
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #333;
+  background-color: #1a1a1a;
+  color: var(--text-main);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.playlist-form input:focus {
+  border-color: var(--brand-green);
+}
+
+.playlist-form button {
+  background-color: var(--text-main);
+  color: var(--bg-sidebar);
+  border: none;
+  padding: 10px;
+  border-radius: 500px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+  transition:
+    transform 0.1s,
+    background-color 0.2s;
+}
+
+.playlist-form button:hover {
+  background-color: #f6f6f6;
+  transform: scale(1.02);
+}
+
+/* --------------------------------------------------------------------------
+   HU2 - CRITERIO 3: Mensaje de advertencia visual para nombres vacíos
+   -------------------------------------------------------------------------- */
+.advertencia-texto {
+  color: var(--danger);
+  font-size: 12px;
+  margin-top: 2px;
+  display: block;
+}
+
+/* Utilidad global para ocultar elementos (usada en Criterio 3 de HU2, etc.) */
+.ocultar {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   HU2 - CRITERIO 2: Contenedor que muestra inmediatamente la playlist creada
+   -------------------------------------------------------------------------- */
+.playlists-container {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Tarjeta individual de Playlist que aparece en el Sidebar */
+.item-playlist {
+  padding: 12px;
+  background-color: var(--bg-card);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-left: 4px solid transparent;
+}
+
+.item-playlist:hover {
+  background-color: var(--bg-hover);
+}
+
+.playlist-nombre {
+  font-weight: bold;
+  display: block;
+}
+
+.playlist-info-secundaria {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  display: block;
+}
+
+/* ==========================================================================
+   COLUMNA DERECHA: MAIN CONTENT (Buscador y Resultados)
+   ========================================================================== */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.main-header h1 {
+  margin: 0 0 20px 0;
+  font-size: 28px;
+}
+
+/* --------------------------------------------------------------------------
+   HU1 - CRITERIO 1: Campo de búsqueda y botón para buscar en pantalla
+   -------------------------------------------------------------------------- */
 .search-section {
   margin-bottom: 24px;
 }
 
 .search-form {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  max-width: 500px;
 }
 
 .search-form input {
   flex: 1;
-  padding: 12px 16px;
-  border-radius: 500px; /* Bordes muy redondeados estilo Spotify */
-  border: 1px solid #1db954; /* Borde verde característico */
+  padding: 14px 20px;
+  border-radius: 500px;
+  border: 1px solid #282828;
   background-color: #242424;
-  color: #ffffff;
-  font-size: 16px;
+  color: var(--text-main);
+  font-size: 15px;
   outline: none;
 }
 
 .search-form input:focus {
-  border-color: #1ed760;
-  box-shadow: 0 0 8px rgba(29, 185, 84, 0.4);
+  border-color: var(--brand-green);
 }
 
 .search-form button {
-  background-color: #1db954;
-  color: #ffffff;
+  background-color: var(--brand-green);
+  color: var(--text-main);
   border: none;
-  padding: 12px 24px;
+  padding: 14px 28px;
   border-radius: 500px;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s;
 }
 
 .search-form button:hover {
-  background-color: #1ed760;
+  background-color: var(--brand-green-hover);
 }
 
-/* ==========================================================================
-   CONTENEDOR DE RESULTADOS Y ESTADOS (Criterio 2, 4 y 5)
-   ========================================================================== */
+/* Contenedor principal de resultados */
 .results-container {
-  background-color: #181818;
+  background-color: var(--bg-card);
   border-radius: 8px;
-  padding: 20px;
-  min-height: 200px;
+  padding: 24px;
+  min-height: 300px;
+}
+
+/* --------------------------------------------------------------------------
+   HU1 - CRITERIO 3: Lista de canciones con carátula, título, artista y duración
+   -------------------------------------------------------------------------- */
+.lista-canciones {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 12px;
+}
+
+.item-cancion {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
 }
 
-.estado-vacio,
-.error-mensaje {
-  color: #b3b3b3;
-  text-align: center;
+.item-cancion:hover {
+  background-color: var(--bg-hover);
+}
+
+.cancion-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cancion-caratula {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.cancion-detalles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cancion-titulo {
+  font-weight: 500;
+}
+
+.cancion-artista {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.cancion-metadatos {
   font-size: 14px;
-}
-
-.error-mensaje {
-  color: #ff4d4d; /* Texto rojo para errores */
+  color: var(--text-muted);
 }
 
 /* ==========================================================================
-   SPINNER DE CARGA (HU1 - Criterio 2)
+   ESTADOS DE CARGA, ERRORES Y MENSAJES AMIGABLES
    ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   HU1 - CRITERIO 2: Indicador visual de carga (Spinner giratorio)
+   -------------------------------------------------------------------------- */
 .spinner-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+  padding: 40px 0;
 }
 
 .spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid rgba(255, 255, 255, 0.1); /* Círculo de fondo semi-transparente */
-  border-left-color: #1db954; /* Solo un borde verde */
-  border-radius: 50%; /* Lo hace circular */
-  animation: spin 1s linear infinite; /* Animación constante */
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-left-color: var(--brand-green);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
-/* Regla que define la animación de rotación de 0 a 360 grados */
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -122,4 +317,131 @@ body {
   100% {
     transform: rotate(360deg);
   }
+}
+
+/* --------------------------------------------------------------------------
+   HU1 - CRITERIO 4 / HU2 - CRITERIO 4: Mensaje amigable cuando no hay contenido
+   -------------------------------------------------------------------------- */
+.estado-vacio {
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 14px;
+  padding: 40px 0;
+}
+
+/* --------------------------------------------------------------------------
+   HU1 - CRITERIO 5: Mensaje de error de conexión en pantalla
+   -------------------------------------------------------------------------- */
+.error-mensaje {
+  color: var(--danger);
+  text-align: center;
+  font-size: 14px;
+  padding: 40px 0;
+}
+
+/* ==========================================================================
+   RESPONSIVIDAD (Ajuste para móviles)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .app-layout {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #282828;
+  }
+  .main-content {
+    height: auto;
+    overflow-y: visible;
+  }
+}
+/* ==========================================================================
+   HU3 - GUARDAR CANCIONES EN PLAYLIST
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   HU3 - CRITERIO 1 y 3: Controles interactivos dentro de cada tarjeta
+   -------------------------------------------------------------------------- */
+.cancion-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.select-playlist {
+  background-color: #242424;
+  color: var(--text-main);
+  border: 1px solid #3d3d3d;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+
+.select-playlist:disabled {
+  background-color: #1a1a1a;
+  color: var(--text-muted);
+  border-color: #2a2a2a;
+  cursor: not-allowed;
+}
+
+.boton-agregar-cancion {
+  background-color: var(--brand-green);
+  color: var(--text-main);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform 0.1s,
+    background-color 0.2s;
+}
+
+.boton-agregar-cancion:hover:not(:disabled) {
+  background-color: var(--brand-green-hover);
+  transform: scale(1.08);
+}
+
+.boton-agregar-cancion:disabled {
+  background-color: #333333;
+  color: #666666;
+  cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   HU3 - CRITERIO 2: Mensaje de confirmación temporal (Notification Toast)
+   -------------------------------------------------------------------------- */
+.toast-notificacion {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: var(--brand-green);
+  color: var(--text-main);
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast-notificacion.ocultar-toast {
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
 }

@@ -7,36 +7,70 @@
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
-    <header class="app-header">
-      <h1>Mi Setlist</h1>
-    </header>
+    <div class="app-layout">
+      <!-- COLUMNA IZQUIERDA: PLAYLISTS (Sidebar estilo Spotify) -->
+      <aside class="sidebar">
+        <header class="sidebar-header">
+          <h2>🎵 Mi Setlist</h2>
+        </header>
 
-    <main class="app-container">
-      <!-- SECCIÓN DE BÚSQUEDA (HU1 - Criterio 1) -->
-      <section class="search-section">
-        <h2>Buscar Canciones</h2>
-        <!-- Usamos un formulario nativo para capturar el botón y el Enter al mismo tiempo -->
-        <form id="formulario-busqueda" class="search-form">
-          <input
-            type="text"
-            id="input-busqueda"
-            placeholder="Escribe un artista o canción..."
-            required
-          />
-          <button type="submit" id="boton-buscar">Buscar</button>
-        </form>
-      </section>
+        <!-- HU2 - Criterio 1: Formulario para crear Playlist -->
+        <section class="playlist-creator">
+          <h3>Crear Playlist</h3>
+          <form id="formulario-playlist" class="playlist-form">
+            <div class="input-group">
+              <input
+                type="text"
+                id="input-playlist"
+                placeholder="Nombre de la nueva playlist..."
+              />
+              <!-- Mensaje de advertencia visual (HU2 - Criterio 3) -->
+              <span id="advertencia-playlist" class="advertencia-texto ocultar">
+                El nombre no puede estar vacío.
+              </span>
+            </div>
+            <button type="submit" id="boton-crear-playlist">Crear</button>
+          </form>
+        </section>
 
-      <!-- SECCIÓN DE RESULTADOS (HU1 - Criterios 2, 3, 4 y 5) -->
-      <section class="results-section">
-        <div id="resultados-busqueda" class="results-container">
-          <!-- Aquí se inyectará dinámicamente el spinner, las canciones, los mensajes o los errores -->
-          <p class="estado-vacio">
-            Usa el buscador de arriba para encontrar tus canciones favoritas.
-          </p>
-        </div>
-      </section>
-    </main>
+        <!-- HU2 - Criterios 2 y 4: Lista de Playlists -->
+        <section class="playlists-section">
+          <h3>Mis Playlists</h3>
+          <div id="lista-playlists" class="playlists-container">
+            <!-- Aquí se inyectará la lista o el mensaje de "no hay playlists" -->
+          </div>
+        </section>
+      </aside>
+
+      <!-- COLUMNA DERECHA: BUSCADOR (Main Content) -->
+      <main class="main-content">
+        <header class="main-header">
+          <h1>Explorar Catálogo</h1>
+        </header>
+
+        <!-- HU1 - Criterio 1: Buscador de canciones -->
+        <section class="search-section">
+          <form id="formulario-busqueda" class="search-form">
+            <input
+              type="text"
+              id="input-busqueda"
+              placeholder="Escribe un artista o canción..."
+              required
+            />
+            <button type="submit" id="boton-buscar">Buscar</button>
+          </form>
+        </section>
+
+        <!-- HU1 - Resultados, carga y errores -->
+        <section class="results-section">
+          <div id="resultados-busqueda" class="results-container">
+            <p class="estado-vacio">
+              Usa el buscador de arriba para encontrar tus canciones favoritas.
+            </p>
+          </div>
+        </section>
+      </main>
+    </div>
 
     <script type="module" src="js/app.js"></script>
   </body>

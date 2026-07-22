@@ -1,40 +1,106 @@
-// Importamos la función de búsqueda de la API y los controladores de la interfaz
+// Importamos las funciones de la API y los controladores de la interfaz
 import { buscarCanciones } from './api.js';
-import { mostrarCargando, mostrarError, renderizarResultados } from './ui.js';
+import { 
+    mostrarCargando, 
+    mostrarError, 
+    renderizarResultados,
+    renderizarPlaylists,
+    alternarAdvertenciaPlaylist
+} from './ui.js';
 
-// Esperamos a que todo el HTML de la página esté completamente cargado en el navegador
+// ==========================================================================
+// ESTADO GLOBAL DE LA APLICACIÓN (Sobrevive al recargar la página)
+// ==========================================================================
+let playlists = JSON.parse(localStorage.getItem('playlists')) || [];
+
+/**
+ * Guarda las playlists actuales en el almacenamiento local del navegador.
+ */
+function guardarEnLocalStorage() {
+    localStorage.setItem('playlists', JSON.stringify(playlists));
+}
+
+// ==========================================================================
+// INICIO DE LA APLICACIÓN
+// ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Seleccionamos los elementos clave del DOM que creamos en el index.html
-    const formulario = document.getElementById('formulario-busqueda');
+    // Selectores del buscador (HU1)
+    const formularioBusqueda = document.getElementById('formulario-busqueda');
     const inputBusqueda = document.getElementById('input-busqueda');
     const contenedorResultados = document.getElementById('resultados-busqueda');
 
-    // Escuchamos el evento 'submit' (funciona al hacer clic en "Buscar" o presionar "Enter")
-    formulario.addEventListener('submit', async (evento) => {
-        // Evitamos que la página se recargue por completo (comportamiento por defecto del formulario)
+    // Selectores del creador de Playlists (HU2)
+    const formularioPlaylist = document.getElementById('formulario-playlist');
+    const inputPlaylist = document.getElementById('input-playlist');
+    const advertenciaPlaylist = document.getElementById('advertencia-playlist');
+    const contenedorPlaylists = document.getElementById('lista-playlists');
+
+    // HU2 - CRITERIO 4: Al iniciar la app, si no hay listas, se renderiza el mensaje amigable.
+    // HU2 - CRITERIO 2: Si ya existen listas guardadas, se cargan inmediatamente en pantalla.
+    renderizarPlaylists(contenedorPlaylists, playlists);
+
+    // ==========================================================================
+    // EVENTO 1: CREAR PLAYLIST (HU2)
+    // ==========================================================================
+    formularioPlaylist.addEventListener('submit', (evento) => {
+        // Evitamos que la página se recargue al enviar el formulario
         evento.preventDefault();
 
-        // Obtenemos el texto ingresado y limpiamos los espacios innecesarios con .trim()
-        const termino = inputBusqueda.value.trim();
+        const nombreNuevaPlaylist = inputPlaylist.value.trim();
 
-        // Si el usuario borró el texto y quedó vacío, no hacemos nada
+        // HU2 - CRITERIO 3: Validar que el nombre no esté vacío antes de crear
+        if (!nombreNuevaPlaylist) {
+            // Muestra el mensaje de advertencia visual en pantalla
+            alternarAdvertenciaPlaylist(advertenciaPlaylist, true);
+            return; // Detiene la ejecución para que no se cree nada
+        }
+
+        // Si pasa la validación, ocultamos la advertencia visual
+        alternarAdvertenciaPlaylist(advertenciaPlaylist, false);
+
+        // Creamos la nueva estructura de la playlist
+        const nuevaPlaylist = {
+            id: crypto.randomUUID(),
+            nombre: nombreNuevaPlaylist,
+            canciones: [] // Arreglo vacío listo para recibir temas en la HU3
+        };
+
+        // Agregamos la playlist al estado global
+        playlists.push(nuevaPlaylist);
+
+        // Guardamos en LocalStorage para cumplir la meta del Sprint 1 (sobrevivir al recargar)
+        guardarEnLocalStorage();
+
+        // HU2 - CRITERIO 2: Se actualiza la pantalla mostrando inmediatamente la nueva lista
+        renderizarPlaylists(contenedorPlaylists, playlists);
+
+        // Limpiamos el campo de texto
+        inputPlaylist.value = '';
+    });
+
+    // ==========================================================================
+    // EVENTO 2: BUSCAR CANCIONES (HU1)
+    // ==========================================================================
+    formularioBusqueda.addEventListener('submit', async (evento) => {
+        evento.preventDefault();
+
+        const termino = inputBusqueda.value.trim();
         if (!termino) return;
 
         try {
-            // CRITERIO 2: Mostramos inmediatamente el spinner de carga
+            // HU1 - CRITERIO 2: Mostrar indicador visual de carga
             mostrarCargando(contenedorResultados);
 
-            // Consultamos las canciones a la API de iTunes
             const canciones = await buscarCanciones(termino);
 
-            // CRITERIO 3 y 4: Renderizamos los resultados o mostramos el estado vacío amigable
+            // HU1 - CRITERIO 3 y 4: Pintar canciones o mostrar estado vacío amigable
             renderizarResultados(contenedorResultados, canciones);
 
         } catch (error) {
-            // CRITERIO 5: Si la API o la conexión fallan, desplegamos el mensaje de error en pantalla
+            // HU1 - CRITERIO 5: Si ocurre un error de conexión, desplegar mensaje claro
             mostrarError(
                 contenedorResultados, 
-                'No se pudo establecer conexión con el servidor. Por favor, verifica tu conexión a internet e inténtalo de nuevo.'
+                'No se pudo establecer conexión con el servidor. Por favor, verifica tu conexión a internet.'
             );
         }
     });
