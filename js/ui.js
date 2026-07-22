@@ -4,7 +4,6 @@
 
 /**
  * HU1 - CRITERIO 2: Dibuja el spinner de carga en el contenedor.
- * @param {HTMLElement} contenedor - El elemento del DOM donde se inyectará el spinner.
  */
 export function mostrarCargando(contenedor) {
     contenedor.innerHTML = `
@@ -17,8 +16,6 @@ export function mostrarCargando(contenedor) {
 
 /**
  * HU1 - CRITERIO 5: Muestra un mensaje de error claro en pantalla si falla la conexión.
- * @param {HTMLElement} contenedor - El elemento del DOM donde se mostrará el error.
- * @param {string} mensaje - El texto explicativo del error.
  */
 export function mostrarError(contenedor, mensaje) {
     contenedor.innerHTML = `
@@ -27,15 +24,16 @@ export function mostrarError(contenedor, mensaje) {
 }
 
 /**
- * HU1 - CRITERIOS 3 y 4: Renderiza la lista de canciones o muestra un estado vacío amigable.
- * @param {HTMLElement} contenedor - El elemento del DOM donde se pintarán los resultados.
- * @param {Array} canciones - Arreglo de objetos tipo Cancion.
+ * HU1 - CRITERIOS 3 y 4 | HU3 - CRITERIOS 1 y 3:
+ * Renderiza la lista de canciones con controles para añadir a playlists.
+ * @param {HTMLElement} contenedor - Dónde se pintan los resultados.
+ * @param {Array} canciones - Lista de objetos Cancion.
+ * @param {Array} playlists - Lista de playlists actuales para construir el selector.
  */
-export function renderizarResultados(contenedor, canciones) {
-    // Limpiamos el contenedor (esto oculta automáticamente el spinner de carga)
+export function renderizarResultados(contenedor, canciones, playlists = []) {
     contenedor.innerHTML = '';
 
-    // HU1 - CRITERIO 4: Si la búsqueda no arroja resultados (arreglo vacío)
+    // HU1 - CRITERIO 4: Si la búsqueda no arroja resultados
     if (canciones.length === 0) {
         contenedor.innerHTML = `
             <p class="estado-vacio">
@@ -46,15 +44,26 @@ export function renderizarResultados(contenedor, canciones) {
         return;
     }
 
-    // HU1 - CRITERIO 3: Al finalizar la búsqueda con éxito, construimos la lista estilo Spotify
+    // HU1 - CRITERIO 3: Construcción de la lista de resultados
     const listaHTML = document.createElement('ul');
     listaHTML.className = 'lista-canciones';
+
+    const hayPlaylists = playlists.length > 0;
 
     canciones.forEach(cancion => {
         const item = document.createElement('li');
         item.className = 'item-cancion';
         
-        // Estructuramos la tarjeta con carátula (imagen), título, artista y duración
+        // HU3 - CRITERIO 1 y 3: Construimos el menú desplegable con las playlists disponibles
+        let opcionesPlaylists = '';
+        if (hayPlaylists) {
+            opcionesPlaylists = playlists.map(p => 
+                `<option value="${p.id}">${p.nombre}</option>`
+            ).join('');
+        } else {
+            opcionesPlaylists = `<option value="">Crea una playlist primero</option>`;
+        }
+
         item.innerHTML = `
             <div class="cancion-info">
                 <img src="${cancion.caratula}" alt="Carátula de ${cancion.titulo}" class="cancion-caratula">
@@ -66,7 +75,39 @@ export function renderizarResultados(contenedor, canciones) {
             <div class="cancion-metadatos">
                 <span class="cancion-duracion">${cancion.duracion}</span>
             </div>
+            
+            <!-- HU3 - CRITERIO 1: Control interactivo para seleccionar playlist -->
+            <!-- HU3 - CRITERIO 3: Desactivado si no hay playlists -->
+            <div class="cancion-acciones">
+                <select class="select-playlist" ${!hayPlaylists ? 'disabled' : ''}>
+                    ${opcionesPlaylists}
+                </select>
+                <button 
+                    class="boton-agregar-cancion" 
+                    title="${hayPlaylists ? 'Añadir a playlist' : 'Crea una playlist primero'}"
+                    ${!hayPlaylists ? 'disabled' : ''}
+                >
+                    +
+                </button>
+            </div>
         `;
+
+        // Si hay playlists, escuchamos el clic en el botón '+' de esta tarjeta
+        if (hayPlaylists) {
+            const botonAgregar = item.querySelector('.boton-agregar-cancion');
+            const select = item.querySelector('.select-playlist');
+
+            botonAgregar.addEventListener('click', () => {
+                const playlistId = select.value;
+                // Disparamos un evento personalizado con los datos de la canción y la playlist
+                const eventoAgregar = new CustomEvent('agregarACancion', {
+                    detail: { cancion, playlistId },
+                    bubbles: true
+                });
+                item.dispatchEvent(eventoAgregar);
+            });
+        }
+
         listaHTML.appendChild(item);
     });
 
@@ -74,16 +115,11 @@ export function renderizarResultados(contenedor, canciones) {
 }
 
 /**
- * HU2 - CRITERIO 4: Muestra un mensaje amigable si no hay playlists creadas.
- * HU2 - CRITERIO 2: Renderiza la lista completa de playlists en el sidebar.
- * @param {HTMLElement} contenedor - El elemento del DOM donde se pintarán las playlists.
- * @param {Array} playlists - El arreglo con las playlists creadas en el estado.
+ * HU2 - CRITERIO 4 / CRITERIO 2: Renderiza las playlists en el Sidebar.
  */
 export function renderizarPlaylists(contenedor, playlists) {
-    // Limpiamos el contenedor para evitar duplicados al redibujar
     contenedor.innerHTML = '';
 
-    // HU2 - CRITERIO 4: Si no tengo ninguna playlist creada, se muestra el mensaje amigable
     if (playlists.length === 0) {
         contenedor.innerHTML = `
             <p class="estado-vacio">
@@ -94,17 +130,16 @@ export function renderizarPlaylists(contenedor, playlists) {
         return;
     }
 
-    // HU2 - CRITERIO 2: Al tener playlists, las recorremos y las mostramos inmediatamente
     const listaHTML = document.createElement('div');
     listaHTML.className = 'playlists-lista-vertical';
 
     playlists.forEach(playlist => {
         const item = document.createElement('div');
         item.className = 'item-playlist';
-        item.dataset.id = playlist.id; // Guardamos el ID para saber cuál selecciona el usuario más adelante
+        item.dataset.id = playlist.id;
 
         item.innerHTML = `
-            <span class="playlist-nombre">${playlist.nombre}</span>
+            <span class="playlist-nombre">📂 ${playlist.nombre}</span>
             <span class="playlist-info-secundaria">${playlist.canciones.length} canciones</span>
         `;
 
@@ -115,14 +150,34 @@ export function renderizarPlaylists(contenedor, playlists) {
 }
 
 /**
- * HU2 - CRITERIO 3: Controla la visibilidad de la advertencia visual para nombres vacíos.
- * @param {HTMLElement} elementoAdvertencia - El elemento span de la advertencia en el HTML.
- * @param {boolean} mostrar - true para mostrar la advertencia, false para ocultarla.
+ * HU2 - CRITERIO 3: Advertencia de nombre vacío.
  */
 export function alternarAdvertenciaPlaylist(elementoAdvertencia, mostrar) {
     if (mostrar) {
-        elementoAdvertencia.classList.remove('ocultar'); // Muestra el mensaje de error en rojo
+        elementoAdvertencia.classList.remove('ocultar');
     } else {
-        elementoAdvertencia.classList.add('ocultar');    // Esconde el mensaje de error
+        elementoAdvertencia.classList.add('ocultar');
     }
+}
+
+/**
+ * HU3 - CRITERIO 2: Muestra un mensaje de confirmación temporal en pantalla.
+ * @param {string} mensaje - Texto a mostrar.
+ */
+export function mostrarToast(mensaje) {
+    // Si ya existe un toast activo, lo removemos
+    const toastExistente = document.querySelector('.toast-notificacion');
+    if (toastExistente) toastExistente.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-notificacion';
+    toast.textContent = `✓ ${mensaje}`;
+
+    document.body.appendChild(toast);
+
+    // Ocultamos y eliminamos el toast después de 3 segundos
+    setTimeout(() => {
+        toast.classList.add('ocultar-toast');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }

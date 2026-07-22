@@ -445,3 +445,90 @@ body {
   transform: translateY(20px);
   pointer-events: none;
 }
+/* ==========================================================================
+   HU3 - GUARDAR CANCIONES EN PLAYLIST
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   HU3 - CRITERIO 1 y 3: Controles interactivos dentro de cada tarjeta
+   -------------------------------------------------------------------------- */
+.cancion-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.select-playlist {
+  background-color: #242424;
+  color: var(--text-main);
+  border: 1px solid #3d3d3d;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+
+.select-playlist:disabled {
+  background-color: #1a1a1a;
+  color: var(--text-muted);
+  border-color: #2a2a2a;
+  cursor: not-allowed;
+}
+
+.boton-agregar-cancion {
+  background-color: var(--brand-green);
+  color: var(--text-main);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform 0.1s,
+    background-color 0.2s;
+}
+
+.boton-agregar-cancion:hover:not(:disabled) {
+  background-color: var(--brand-green-hover);
+  transform: scale(1.08);
+}
+
+.boton-agregar-cancion:disabled {
+  background-color: #333333;
+  color: #666666;
+  cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   HU3 - CRITERIO 2: Mensaje de confirmación temporal (Notification Toast)
+   -------------------------------------------------------------------------- */
+.toast-notificacion {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: var(--brand-green);
+  color: var(--text-main);
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast-notificacion.ocultar-toast {
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
