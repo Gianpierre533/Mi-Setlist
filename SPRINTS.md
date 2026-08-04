@@ -9,9 +9,9 @@
 
 ## Sprint 2 (Clase 19) — Meta: La playlist se gestiona de forma completa: quitar elementos, ordenar, ver estadísticas y robustez ante fallos
 
-- **HU5: Eliminación Segura de Canciones y Playlists** (Implementación de la limpieza de datos usando confirmación interactiva mediante un modal propio).
-- **HU6: Ordenamiento Personalizado de la Playlist** (Permite reorganizar dinámicamente la lista de canciones en pantalla por orden alfabético o fechas).
-- **HU7: Control de Tiempo y Estadísticas de la Playlist** (Cálculo acumulativo del tiempo en formato legible y renderizado de métricas de artistas/géneros).
+- **HU5: Control de Tiempo y Estadísticas de la Playlist** (Cálculo acumulativo del tiempo en formato legible y renderizado de métricas de artistas/géneros).
+- **HU6: Eliminación Segura de Canciones y Playlists** (Implementación de la limpieza de datos usando confirmación interactiva mediante un modal propio).
+- **HU7: Ordenamiento Personalizado de la Playlist** (Permite reorganizar dinámicamente la lista de canciones en pantalla por orden alfabético o fechas).
 - **HU8: Persistencia del Estado y Recuperación ante Fallos** (Cierre del ciclo de vida del estado de la app: validación de datos corruptos de LocalStorage y control de restauración segura "Empezar de cero").
 
 ---
@@ -19,7 +19,7 @@
 ## Dependencias detectadas
 
 - Para **HU3 (Guardar Canciones en una Playlist)** necesito antes obligatoriamente implementar la **HU1 (Búsqueda Interactiva de Canciones)** y la **HU2 (Creación de Playlists Personalizadas)**, porque sin resultados que seleccionar ni una lista de destino creada, es imposible ejecutar el flujo de adición.
-- Para **HU7 (Ordenamiento Personalizado)** y **HU5 (Control de Tiempo y Estadísticas)** necesito antes tener implementada la **HU4 (Visualización del Contenido)**, ya que no se puede ordenar ni calcular estadísticas sobre una interfaz que aún no sabe cómo listar las canciones asignadas.
+- Para **HU5 (Control de Tiempo y Estadísticas)**, **HU6 (Eliminación Segura)** y **HU7 (Ordenamiento Personalizado)** necesito antes tener implementada la **HU4 (Visualización del Contenido)**, ya que no se puede calcular estadísticas, eliminar o reordenar canciones sobre una interfaz que aún no sabe cómo listar las canciones asignadas.
 
 ---
 

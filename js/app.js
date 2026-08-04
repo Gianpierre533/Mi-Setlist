@@ -13,6 +13,7 @@ import {
 let playlists = JSON.parse(localStorage.getItem('playlists')) || [];
 let ultimasCancionesBuscadas = [];
 let idPlaylistSeleccionada = null; // Guarda cuál playlist está viendo el usuario
+let criteriosOrdenPlaylists = {}; // HU7: Almacena el criterio de ordenamiento activo por cada playlistId ('recientes', 'antiguas', 'az', 'za')
 
 function guardarEnLocalStorage() {
     localStorage.setItem('playlists', JSON.stringify(playlists));
@@ -124,9 +125,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             renderizarPlaylists(contenedorPlaylists, playlists, idPlaylistSeleccionada);
 
-            // Si estamos viendo esa playlist actualmente, refrescamos la pantalla
+            // Si estamos viendo esa playlist actualmente, refrescamos la pantalla manteniendo el criterio de orden activo
             if (idPlaylistSeleccionada === playlistId) {
-                renderizarDetallePlaylist(contenedorVistaPlaylist, playlistDestino);
+                const criterioActual = criteriosOrdenPlaylists[playlistId] || 'recientes';
+                renderizarDetallePlaylist(contenedorVistaPlaylist, playlistDestino, criterioActual);
             }
 
             mostrarToast(`Añadida "${cancion.titulo}" a ${playlistDestino.nombre}`);
@@ -145,7 +147,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (playlist) {
             // HU4 - CRITERIO 1: Cambiamos la pantalla para mostrar el contenido de esa playlist
             cambiarVistaMain('playlist');
-            renderizarDetallePlaylist(contenedorVistaPlaylist, playlist);
+            
+            // HU7: Recuperar el criterio de orden previo de esta playlist (por defecto 'recientes')
+            const criterioActual = criteriosOrdenPlaylists[playlistId] || 'recientes';
+            renderizarDetallePlaylist(contenedorVistaPlaylist, playlist, criterioActual);
 
             // Resaltamos la playlist activa en el Sidebar
             renderizarPlaylists(contenedorPlaylists, playlists, idPlaylistSeleccionada);
@@ -161,7 +166,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================================================
-    // HU6: ELIMINACIÓN REACCIÓN EN TIEMPO REAL
+    // HU7: ORDENAMIENTO PERSONALIZADO EN TIEMPO REAL
+    // ==========================================================================
+    document.addEventListener('cambiarOrdenPlaylist', (e) => {
+        const { playlistId, criterio } = e.detail;
+
+        // Guarda el criterio elegido para la playlist correspondiente
+        criteriosOrdenPlaylists[playlistId] = criterio;
+
+        const playlist = playlists.find(p => p.id === playlistId);
+        if (playlist) {
+            // Re-renderiza con las canciones reordenadas según el criterio
+            renderizarDetallePlaylist(contenedorVistaPlaylist, playlist, criterio);
+        }
+    });
+
+    // ==========================================================================
+    // HU6: ELIMINACIÓN Y REACCIÓN EN TIEMPO REAL
     // ==========================================================================
 
     // Escuchar eliminación de playlist
@@ -170,6 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Filtrar la playlist eliminada
         playlists = playlists.filter(p => p.id !== playlistId);
+        delete criteriosOrdenPlaylists[playlistId]; // Limpiar registro de criterio
         guardarEnLocalStorage();
 
         // Si la playlist activa era la eliminada, resetear vista al buscador
@@ -197,8 +219,9 @@ document.addEventListener('DOMContentLoaded', () => {
             playlist.canciones = playlist.canciones.filter(c => c.id !== cancionId);
             guardarEnLocalStorage();
 
-            // Re-renderizar detalle actualizado y sidebar
-            renderizarDetallePlaylist(contenedorVistaPlaylist, playlist);
+            // Re-renderizar detalle actualizado manteniendo el criterio de orden activo
+            const criterioActual = criteriosOrdenPlaylists[playlistId] || 'recientes';
+            renderizarDetallePlaylist(contenedorVistaPlaylist, playlist, criterioActual);
             renderizarPlaylists(contenedorPlaylists, playlists, idPlaylistSeleccionada);
             mostrarToast('Canción quitada de la playlist');
         }

@@ -1,60 +1,118 @@
 /* ==========================================================================
-   VARIABLES Y ESTILOS GENERALES (Estructura Base)
+   VARIABLES Y ESTILOS GENERALES 
    ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 :root {
-  --bg-dark: #121212;
-  --bg-sidebar: #000000;
-  --bg-card: #181818;
-  --bg-hover: #282828;
+  --bg-dark: #0a0a0f;
+  --bg-sidebar: #0d0d14;
+  --bg-card: #14141f;
+  --bg-card-hover: #1c1c2e;
   --brand-green: #1db954;
   --brand-green-hover: #1ed760;
-  --text-main: #ffffff;
-  --text-muted: #b3b3b3;
-  --danger: #ff4d4d;
+  --brand-green-glow: rgba(29, 185, 84, 0.15);
+  --accent-gradient: linear-gradient(135deg, #450af5, #c400ff);
+  --accent-purple: #8b5cf6;
+  --accent-blue: #3b82f6;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+  --text-main: #f0f0f5;
+  --text-muted: #8888a0;
+  --danger: #ef4444;
+  --danger-hover: #f87171;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-glow: rgba(255, 255, 255, 0.1);
+  --shadow-main: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-glow-green: 0 0 20px rgba(29, 185, 84, 0.2);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 500px;
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
-  font-family: "Segoe UI", Tahoma, Verdana, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background-color: var(--bg-dark);
   color: var(--text-main);
   margin: 0;
   padding: 0;
   height: 100vh;
   overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Diseño de dos columnas para organizar la pantalla de forma dividida */
+/* Layout principal de dos columnas */
 .app-layout {
   display: flex;
   height: 100vh;
   width: 100vw;
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(139, 92, 246, 0.06), transparent 50%),
+    radial-gradient(ellipse at 100% 100%, rgba(29, 185, 84, 0.05), transparent 50%),
+    var(--bg-dark);
 }
 
 /* ==========================================================================
    COLUMNA IZQUIERDA: SIDEBAR (Playlists)
    ========================================================================== */
 .sidebar {
-  width: 320px;
-  background-color: var(--bg-sidebar);
+  width: 300px;
+  min-width: 300px;
+  background: linear-gradient(180deg, rgba(20, 20, 35, 0.95), rgba(10, 10, 18, 0.98));
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  box-sizing: border-box;
-  border-right: 1px solid #282828;
+  padding: 28px 20px;
+  border-right: 1px solid var(--border-subtle);
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efecto glow decorativo en la esquina del sidebar */
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  left: -60px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(29, 185, 84, 0.12), transparent 70%);
+  pointer-events: none;
 }
 
 .sidebar-header h2 {
-  margin: 0 0 20px 0;
+  margin: 0 0 28px 0;
   font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #ffffff 0%, #1db954 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 1;
 }
 
 .playlist-creator h3,
 .playlists-section h3 {
-  font-size: 14px;
+  font-size: 10px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   color: var(--text-muted);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
 }
 
 /* --------------------------------------------------------------------------
@@ -63,8 +121,10 @@ body {
 .playlist-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 1;
 }
 
 .input-group {
@@ -74,37 +134,62 @@ body {
 }
 
 .playlist-form input {
-  padding: 12px;
-  border-radius: 4px;
-  border: 1px solid #333;
-  background-color: #1a1a1a;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background-color: rgba(255, 255, 255, 0.04);
   color: var(--text-main);
-  font-size: 14px;
+  font-size: 13px;
+  font-family: inherit;
   outline: none;
-  transition: border-color 0.2s;
+  transition: all var(--transition-smooth);
+}
+
+.playlist-form input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
 }
 
 .playlist-form input:focus {
   border-color: var(--brand-green);
+  background-color: rgba(29, 185, 84, 0.06);
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.12), inset 0 0 0 1px rgba(29, 185, 84, 0.15);
 }
 
 .playlist-form button {
-  background-color: var(--text-main);
-  color: var(--bg-sidebar);
+  background: linear-gradient(135deg, var(--brand-green), #17a34a);
+  color: #000000;
   border: none;
-  padding: 10px;
-  border-radius: 500px;
-  font-weight: bold;
+  padding: 12px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
   cursor: pointer;
-  font-size: 14px;
-  transition:
-    transform 0.1s,
-    background-color 0.2s;
+  font-size: 13px;
+  font-family: inherit;
+  letter-spacing: 0.3px;
+  transition: all var(--transition-smooth);
+  box-shadow: 0 4px 15px rgba(29, 185, 84, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.playlist-form button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(255, 255, 255, 0.15) 100%);
+  pointer-events: none;
 }
 
 .playlist-form button:hover {
-  background-color: #f6f6f6;
-  transform: scale(1.02);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(29, 185, 84, 0.35);
+  filter: brightness(1.1);
+}
+
+.playlist-form button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(29, 185, 84, 0.2);
 }
 
 /* --------------------------------------------------------------------------
@@ -112,12 +197,23 @@ body {
    -------------------------------------------------------------------------- */
 .advertencia-texto {
   color: var(--danger);
-  font-size: 12px;
-  margin-top: 2px;
-  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  animation: shakeX 0.4s ease;
 }
 
-/* Utilidad global para ocultar elementos (usada en Criterio 3 de HU2, etc.) */
+@keyframes shakeX {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+
 .ocultar {
   display: none !important;
 }
@@ -130,32 +226,72 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
+  padding-right: 4px;
+  position: relative;
+  z-index: 1;
 }
 
-/* Tarjeta individual de Playlist que aparece en el Sidebar */
+/* Estilo para las barras de desplazamiento (Scrollbars finas tipo Spotify) */
+.playlists-container::-webkit-scrollbar,
+.main-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.playlists-container::-webkit-scrollbar-track,
+.main-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.playlists-container::-webkit-scrollbar-thumb,
+.main-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.playlists-container::-webkit-scrollbar-thumb:hover,
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 .item-playlist {
-  padding: 12px;
-  background-color: var(--bg-card);
-  border-radius: 6px;
+  padding: 12px 14px;
+  background-color: transparent;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background-color 0.2s;
-  border-left: 4px solid transparent;
+  transition: all var(--transition-smooth);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid transparent;
+  position: relative;
 }
 
 .item-playlist:hover {
-  background-color: var(--bg-hover);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: var(--border-subtle);
+}
+
+.item-playlist.activa {
+  background: linear-gradient(135deg, rgba(29, 185, 84, 0.1), rgba(29, 185, 84, 0.04));
+  border-color: rgba(29, 185, 84, 0.2);
+}
+
+.item-playlist.activa .playlist-nombre {
+  color: var(--brand-green);
 }
 
 .playlist-nombre {
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 14px;
   display: block;
+  transition: color var(--transition-fast);
 }
 
 .playlist-info-secundaria {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-muted);
-  margin-top: 4px;
+  margin-top: 3px;
   display: block;
 }
 
@@ -166,66 +302,99 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 30px;
+  padding: 36px 48px;
   overflow-y: auto;
-  box-sizing: border-box;
 }
 
 .main-header h1 {
-  margin: 0 0 20px 0;
-  font-size: 28px;
+  margin: 0 0 28px 0;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  background: linear-gradient(135deg, #ffffff, rgba(255, 255, 255, 0.7));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* --------------------------------------------------------------------------
    HU1 - CRITERIO 1: Campo de búsqueda y botón para buscar en pantalla
    -------------------------------------------------------------------------- */
 .search-section {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .search-form {
   display: flex;
   gap: 12px;
-  max-width: 500px;
+  max-width: 600px;
 }
 
 .search-form input {
   flex: 1;
-  padding: 14px 20px;
-  border-radius: 500px;
-  border: 1px solid #282828;
-  background-color: #242424;
+  padding: 14px 24px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  background-color: rgba(255, 255, 255, 0.05);
   color: var(--text-main);
-  font-size: 15px;
+  font-size: 14px;
+  font-family: inherit;
   outline: none;
+  transition: all var(--transition-smooth);
+}
+
+.search-form input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
 }
 
 .search-form input:focus {
   border-color: var(--brand-green);
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.12);
+  background-color: rgba(29, 185, 84, 0.04);
 }
 
 .search-form button {
-  background-color: var(--brand-green);
-  color: var(--text-main);
+  background: linear-gradient(135deg, var(--brand-green), #17a34a);
+  color: #000000;
   border: none;
-  padding: 14px 28px;
-  border-radius: 500px;
-  font-weight: bold;
-  font-size: 15px;
+  padding: 14px 36px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 14px;
+  font-family: inherit;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all var(--transition-smooth);
+  box-shadow: 0 4px 16px rgba(29, 185, 84, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.search-form button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 30%, rgba(255, 255, 255, 0.12) 100%);
+  pointer-events: none;
 }
 
 .search-form button:hover {
-  background-color: var(--brand-green-hover);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(29, 185, 84, 0.4);
+  filter: brightness(1.1);
 }
 
-/* Contenedor principal de resultados */
+.search-form button:active {
+  transform: translateY(0) scale(1);
+}
+
 .results-container {
-  background-color: var(--bg-card);
-  border-radius: 8px;
-  padding: 24px;
-  min-height: 300px;
+  background: linear-gradient(180deg, rgba(20, 20, 35, 0.5), rgba(14, 14, 24, 0.4));
+  backdrop-filter: blur(24px);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  border: 1px solid var(--border-subtle);
+  min-height: 320px;
 }
 
 /* --------------------------------------------------------------------------
@@ -237,20 +406,23 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 4px;
 }
 
 .item-cancion {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: background-color 0.2s;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-smooth);
+  border: 1px solid transparent;
 }
 
 .item-cancion:hover {
-  background-color: var(--bg-hover);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: var(--border-subtle);
+  transform: translateX(2px);
 }
 
 .cancion-info {
@@ -262,28 +434,43 @@ body {
 .cancion-caratula {
   width: 48px;
   height: 48px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: all var(--transition-smooth);
+}
+
+.item-cancion:hover .cancion-caratula {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  transform: scale(1.05);
 }
 
 .cancion-detalles {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .cancion-titulo {
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-main);
+  transition: color var(--transition-fast);
+}
+
+.item-cancion:hover .cancion-titulo {
+  color: #ffffff;
 }
 
 .cancion-artista {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-muted);
 }
 
 .cancion-metadatos {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 /* ==========================================================================
@@ -297,26 +484,30 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  padding: 40px 0;
+  gap: 18px;
+  padding: 56px 0;
+}
+
+.spinner-container p {
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(255, 255, 255, 0.1);
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba(255, 255, 255, 0.06);
   border-left-color: var(--brand-green);
+  border-top-color: var(--brand-green);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.7s cubic-bezier(0.6, 0.2, 0.4, 0.8) infinite;
+  filter: drop-shadow(0 0 8px rgba(29, 185, 84, 0.3));
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* --------------------------------------------------------------------------
@@ -326,7 +517,12 @@ body {
   color: var(--text-muted);
   text-align: center;
   font-size: 14px;
-  padding: 40px 0;
+  padding: 56px 24px;
+  line-height: 1.8;
+}
+
+.estado-vacio small {
+  opacity: 0.7;
 }
 
 /* --------------------------------------------------------------------------
@@ -336,28 +532,10 @@ body {
   color: var(--danger);
   text-align: center;
   font-size: 14px;
-  padding: 40px 0;
+  padding: 56px 24px;
+  line-height: 1.7;
 }
 
-/* ==========================================================================
-   RESPONSIVIDAD (Ajuste para móviles)
-   ========================================================================== */
-@media (max-width: 768px) {
-  .app-layout {
-    flex-direction: column;
-    overflow-y: auto;
-  }
-  .sidebar {
-    width: 100%;
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid #282828;
-  }
-  .main-content {
-    height: auto;
-    overflow-y: visible;
-  }
-}
 /* ==========================================================================
    HU3 - GUARDAR CANCIONES EN PLAYLIST
    ========================================================================== */
@@ -368,54 +546,67 @@ body {
 .cancion-acciones {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .select-playlist {
-  background-color: #242424;
+  background-color: rgba(255, 255, 255, 0.05);
   color: var(--text-main);
-  border: 1px solid #3d3d3d;
-  padding: 6px 10px;
-  border-radius: 4px;
-  font-size: 13px;
+  border: 1px solid var(--border-subtle);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-family: inherit;
   outline: none;
   cursor: pointer;
+  transition: all var(--transition-smooth);
+}
+
+.select-playlist:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.select-playlist:focus:not(:disabled) {
+  border-color: var(--brand-green);
+  box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.15);
 }
 
 .select-playlist:disabled {
-  background-color: #1a1a1a;
+  background-color: rgba(255, 255, 255, 0.02);
   color: var(--text-muted);
-  border-color: #2a2a2a;
   cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .boton-agregar-cancion {
-  background-color: var(--brand-green);
-  color: var(--text-main);
+  background: linear-gradient(135deg, var(--brand-green), #17a34a);
+  color: #000000;
   border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition:
-    transform 0.1s,
-    background-color 0.2s;
+  transition: all var(--transition-smooth);
+  box-shadow: 0 2px 8px rgba(29, 185, 84, 0.25);
 }
 
 .boton-agregar-cancion:hover:not(:disabled) {
-  background-color: var(--brand-green-hover);
-  transform: scale(1.08);
+  transform: scale(1.15) rotate(90deg);
+  box-shadow: 0 4px 16px rgba(29, 185, 84, 0.4);
+  filter: brightness(1.15);
 }
 
 .boton-agregar-cancion:disabled {
-  background-color: #333333;
-  color: #666666;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.2);
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 /* --------------------------------------------------------------------------
@@ -423,161 +614,110 @@ body {
    -------------------------------------------------------------------------- */
 .toast-notificacion {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  background-color: var(--brand-green);
-  color: var(--text-main);
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  z-index: 1000;
-  transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.toast-notificacion.ocultar-toast {
-  opacity: 0;
-  transform: translateY(20px);
-  pointer-events: none;
-}
-/* ==========================================================================
-   HU3 - GUARDAR CANCIONES EN PLAYLIST
-   ========================================================================== */
-
-/* --------------------------------------------------------------------------
-   HU3 - CRITERIO 1 y 3: Controles interactivos dentro de cada tarjeta
-   -------------------------------------------------------------------------- */
-.cancion-acciones {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.select-playlist {
-  background-color: #242424;
-  color: var(--text-main);
-  border: 1px solid #3d3d3d;
-  padding: 6px 10px;
-  border-radius: 4px;
+  bottom: 32px;
+  right: 32px;
+  background: linear-gradient(135deg, var(--brand-green), #17a34a);
+  color: #000000;
+  padding: 16px 28px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
   font-size: 13px;
-  outline: none;
-  cursor: pointer;
-}
-
-.select-playlist:disabled {
-  background-color: #1a1a1a;
-  color: var(--text-muted);
-  border-color: #2a2a2a;
-  cursor: not-allowed;
-}
-
-.boton-agregar-cancion {
-  background-color: var(--brand-green);
-  color: var(--text-main);
-  border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    transform 0.1s,
-    background-color 0.2s;
-}
-
-.boton-agregar-cancion:hover:not(:disabled) {
-  background-color: var(--brand-green-hover);
-  transform: scale(1.08);
-}
-
-.boton-agregar-cancion:disabled {
-  background-color: #333333;
-  color: #666666;
-  cursor: not-allowed;
-}
-
-/* --------------------------------------------------------------------------
-   HU3 - CRITERIO 2: Mensaje de confirmación temporal (Notification Toast)
-   -------------------------------------------------------------------------- */
-.toast-notificacion {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  background-color: var(--brand-green);
-  color: var(--text-main);
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  font-family: inherit;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(29, 185, 84, 0.15);
   z-index: 1000;
-  transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
+  transition: all var(--transition-bounce);
   opacity: 1;
   transform: translateY(0);
+  animation: toastSlideIn 0.4s var(--transition-bounce);
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .toast-notificacion.ocultar-toast {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(20px) scale(0.95);
   pointer-events: none;
 }
+
 /* ==========================================================================
    HU4 - VISUALIZACIÓN DEL CONTENIDO DE UNA PLAYLIST
    ========================================================================== */
-
-/* Cabecera del detalle de la playlist */
 .playlist-header-detalle {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #282828;
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-subtle);
+  position: relative;
+}
+
+.playlist-header-detalle::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 80px;
+  height: 2px;
+  background: var(--brand-green);
+  border-radius: 2px;
 }
 
 .playlist-header-detalle h1 {
   margin: 0;
-  font-size: 32px;
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, #ffffff, rgba(255, 255, 255, 0.75));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .playlist-stats-basicas {
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 13px;
+  margin-top: 6px;
 }
 
 .boton-volver-buscador {
-  background-color: var(--bg-hover);
+  background-color: rgba(255, 255, 255, 0.06);
   color: var(--text-main);
-  border: 1px solid #3d3d3d;
-  padding: 8px 16px;
-  border-radius: 500px;
+  border: 1px solid var(--border-glow);
+  padding: 10px 22px;
+  border-radius: var(--radius-full);
   cursor: pointer;
   font-size: 13px;
-  transition: background-color 0.2s;
+  font-weight: 600;
+  font-family: inherit;
+  transition: all var(--transition-smooth);
 }
 
 .boton-volver-buscador:hover {
-  background-color: #383838;
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
 }
 
 /* --------------------------------------------------------------------------
    HU4 - CRITERIO 2: Estructura de canción con título, artista, duración y fecha
    -------------------------------------------------------------------------- */
 .cancion-fecha-agregada {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-muted);
   margin-top: 2px;
+  opacity: 0.8;
 }
 
 .cancion-metadatos-playlist {
@@ -588,104 +728,147 @@ body {
 }
 
 .cancion-duracion-badge {
-  font-weight: bold;
-  font-size: 14px;
+  font-weight: 600;
+  font-size: 13px;
   color: var(--text-main);
+  font-variant-numeric: tabular-nums;
 }
+
 /* ==========================================================================
    HU5: ESTADÍSTICAS Y CONTROL DE TIEMPO DE PLAYLIST
    ========================================================================== */
 .playlist-stats-panel {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 12px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 32px;
 }
 
 .stat-card {
-  background-color: var(--bg-card, #181818);
-  border: 1px solid #282828;
-  border-radius: 8px;
-  padding: 12px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
+  transition: all var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
 }
 
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--brand-green);
+  opacity: 0;
+  transition: opacity var(--transition-smooth);
+}
+
+.stat-card:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+  border-color: var(--border-glow);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.stat-card:hover::before {
+  opacity: 1;
+}
+
+/* Colores diferenciados para cada stat card */
+.stat-card:nth-child(1)::before { background: var(--accent-blue); }
+.stat-card:nth-child(2)::before { background: var(--brand-green); }
+.stat-card:nth-child(3)::before { background: var(--accent-purple); }
+.stat-card:nth-child(4)::before { background: var(--accent-amber); }
+
 .stat-card .stat-label {
-  font-size: 11px;
+  font-size: 10px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-muted, #b3b3b3);
+  letter-spacing: 1.2px;
+  color: var(--text-muted);
 }
 
 .stat-card .stat-value {
-  font-size: 15px;
-  font-weight: bold;
-  color: var(--text-main, #ffffff);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 /* ==========================================================================
    HU6: MODAL ACCESIBLE Y BOTONES DE ELIMINACIÓN
    ========================================================================== */
-
-/* Botón de eliminar canción (✕) */
 .btn-eliminar-cancion {
   background: transparent;
   border: none;
-  color: #b3b3b3;
-  font-size: 16px;
+  color: var(--text-muted);
+  font-size: 14px;
   font-weight: bold;
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: color 0.2s ease, background-color 0.2s ease;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-smooth);
+  opacity: 0.5;
+}
+
+.item-cancion:hover .btn-eliminar-cancion {
+  opacity: 1;
 }
 
 .btn-eliminar-cancion:hover {
-  color: #ff5555;
-  background-color: rgba(255, 85, 85, 0.1);
+  color: var(--danger);
+  background-color: rgba(239, 68, 68, 0.1);
+  opacity: 1;
 }
 
-/* Botón de eliminar playlist (Sidebar y Header) */
 .btn-eliminar-playlist {
   background: transparent;
   border: none;
-  color: #b3b3b3;
+  color: var(--text-muted);
   font-size: 14px;
   cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  transition: color 0.2s ease;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-smooth);
+  opacity: 0;
+}
+
+.item-playlist:hover .btn-eliminar-playlist {
+  opacity: 1;
 }
 
 .btn-eliminar-playlist:hover {
-  color: #ff5555;
-}
-
-.item-playlist {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  color: var(--danger);
+  transform: scale(1.15);
 }
 
 .btn-eliminar-header {
   background-color: transparent;
-  border: 1px solid #ff5555;
-  color: #ff5555;
-  padding: 6px 12px;
-  border-radius: 4px;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: var(--danger);
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
-  transition: all 0.2s ease;
+  font-family: inherit;
+  transition: all var(--transition-smooth);
 }
 
 .btn-eliminar-header:hover {
-  background-color: #ff5555;
+  background-color: var(--danger);
+  border-color: var(--danger);
   color: #ffffff;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+  transform: translateY(-1px);
 }
 
 /* Modal Backdrop */
@@ -700,8 +883,13 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(4px);
-  transition: opacity 0.2s ease;
+  backdrop-filter: blur(12px);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .modal-backdrop.ocultar {
@@ -709,65 +897,192 @@ body {
 }
 
 .modal-contenido {
-  background-color: var(--bg-card, #181818);
-  border: 1px solid #333333;
-  border-radius: 12px;
-  padding: 24px;
+  background: linear-gradient(180deg, #1a1a2e, #141420);
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius-xl);
+  padding: 32px;
   width: 90%;
-  max-width: 420px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  max-width: 440px;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
   gap: 16px;
+  animation: modalSlideUp 0.3s var(--transition-bounce);
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .modal-contenido h3 {
   margin: 0;
-  font-size: 18px;
-  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-main);
 }
 
 .modal-contenido p {
   margin: 0;
   font-size: 14px;
-  color: #b3b3b3;
-  line-height: 1.5;
+  color: var(--text-muted);
+  line-height: 1.6;
 }
 
 .modal-acciones {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 8px;
+  margin-top: 12px;
 }
 
 .btn-secundario {
-  background-color: transparent;
-  border: 1px solid #444444;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-glow);
   color: #ffffff;
-  padding: 8px 16px;
-  border-radius: 6px;
+  padding: 10px 22px;
+  border-radius: var(--radius-full);
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s ease;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  transition: all var(--transition-smooth);
 }
 
 .btn-secundario:hover {
-  background-color: #333333;
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .btn-peligro {
-  background-color: #e50914;
+  background: linear-gradient(135deg, var(--danger), #dc2626);
   border: none;
   color: #ffffff;
-  padding: 8px 16px;
-  border-radius: 6px;
+  padding: 10px 22px;
+  border-radius: var(--radius-full);
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: background-color 0.2s ease;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  transition: all var(--transition-smooth);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
 }
 
 .btn-peligro:hover {
-  background-color: #b80710;
+  filter: brightness(1.1);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   HU7: ORDENAMIENTO PERSONALIZADO DE CANCIONES
+   ========================================================================== */
+.barra-herramientas-playlist,
+.playlist-controles-orden {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 22px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  gap: 12px;
+}
+
+.control-orden,
+.orden-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Selector desplegable estilizado estilo Spotify */
+.select-orden,
+.select-ordenar,
+.control-orden select,
+.barra-herramientas-playlist select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 9px 38px 9px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  transition: all var(--transition-smooth);
+
+  /* Icono de flecha personalizada SVG */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238888a0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+
+/* Efectos hover y focus */
+.select-orden:hover,
+.select-ordenar:hover,
+.control-orden select:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.select-orden:focus,
+.select-ordenar:focus,
+.control-orden select:focus {
+  border-color: var(--brand-green);
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.15);
+}
+
+/* Estilos de las opciones dentro del desplegable */
+.select-orden option,
+.select-ordenar option,
+.control-orden select option {
+  background-color: #1a1a2e;
+  color: #ffffff;
+  padding: 8px;
+}
+
+/* ==========================================================================
+   RESPONSIVIDAD (Ajuste para móviles)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .app-layout {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .sidebar {
+    width: 100%;
+    min-width: unset;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .main-content {
+    height: auto;
+    padding: 20px;
+    overflow-y: visible;
+  }
+  .playlist-stats-panel {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .playlist-header-detalle {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
 }

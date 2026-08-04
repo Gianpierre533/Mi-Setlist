@@ -239,11 +239,14 @@ export function mostrarToast(mensaje) {
 }
 
 /**
- * HU4 + HU5 + HU6: Renderiza el contenido detallado de la playlist, estadísticas y acciones de eliminación.
+ * HU4 + HU5 + HU6 + HU7: Renderiza el contenido detallado de la playlist, estadísticas, 
+ * controles de ordenamiento y acciones de eliminación.
+ * 
  * @param {HTMLElement} contenedor - El div de la vista de detalle.
  * @param {Object} playlist - La playlist seleccionada.
+ * @param {string} criterioOrden - El criterio actual de ordenamiento ('recientes', 'antiguas', 'az', 'za').
  */
-export function renderizarDetallePlaylist(contenedor, playlist) {
+export function renderizarDetallePlaylist(contenedor, playlist, criterioOrden = 'recientes') {
     contenedor.innerHTML = '';
 
     // Encabezado de la playlist con acción de eliminación (HU6 Criterio 2)
@@ -311,11 +314,57 @@ export function renderizarDetallePlaylist(contenedor, playlist) {
         return;
     }
 
-    // HU4 + HU6: Renderizar canciones con botón de eliminación "✕" (HU6 Criterio 1 y 3)
+    // =========================================================================
+    // HU7 - CRITERIO 1 Y 2: Controles y lógica de Ordenamiento Personalizado
+    // =========================================================================
+    const contenedorOrden = document.createElement('div');
+    contenedorOrden.className = 'playlist-controles-orden';
+    contenedorOrden.innerHTML = `
+        <label for="select-ordenar" class="orden-label">⇅ Ordenar por:</label>
+        <select id="select-ordenar" class="select-ordenar" data-playlist-id="${playlist.id}">
+            <option value="recientes" ${criterioOrden === 'recientes' ? 'selected' : ''}>Más recientes primero</option>
+            <option value="antiguas" ${criterioOrden === 'antiguas' ? 'selected' : ''}>Más antiguas primero</option>
+            <option value="az" ${criterioOrden === 'az' ? 'selected' : ''}>Título (A - Z)</option>
+            <option value="za" ${criterioOrden === 'za' ? 'selected' : ''}>Título (Z - A)</option>
+        </select>
+    `;
+    contenedor.appendChild(contenedorOrden);
+
+    // Evento HU7 Criterio 3: Reorganización reactiva mediante Evento Personalizado
+    contenedorOrden.querySelector('#select-ordenar').addEventListener('change', (e) => {
+        const nuevoCriterio = e.target.value;
+        const eventoCambiarOrden = new CustomEvent('cambiarOrdenPlaylist', {
+            detail: { playlistId: playlist.id, criterio: nuevoCriterio },
+            bubbles: true
+        });
+        e.target.dispatchEvent(eventoCambiarOrden);
+    });
+
+    // Copiamos el arreglo para no mutar el estado original en memoria directamente
+    let cancionesOrdenadas = [...playlist.canciones];
+
+    // Aplicar criterio de ordenamiento (HU7 Criterio 2)
+    switch (criterioOrden) {
+        case 'antiguas':
+            cancionesOrdenadas.sort((a, b) => new Date(a.fechaAgregada || 0) - new Date(b.fechaAgregada || 0));
+            break;
+        case 'az':
+            cancionesOrdenadas.sort((a, b) => a.titulo.localeCompare(b.titulo));
+            break;
+        case 'za':
+            cancionesOrdenadas.sort((a, b) => b.titulo.localeCompare(a.titulo));
+            break;
+        case 'recientes':
+        default:
+            cancionesOrdenadas.sort((a, b) => new Date(b.fechaAgregada || 0) - new Date(a.fechaAgregada || 0));
+            break;
+    }
+
+    // HU4 + HU6: Renderizar lista de canciones ordenadas
     const listaHTML = document.createElement('ul');
     listaHTML.className = 'lista-canciones';
 
-    playlist.canciones.forEach(cancion => {
+    cancionesOrdenadas.forEach(cancion => {
         const item = document.createElement('li');
         item.className = 'item-cancion';
 
@@ -344,7 +393,7 @@ export function renderizarDetallePlaylist(contenedor, playlist) {
             </div>
         `;
 
-        // Evento para quitar canción individual
+        // Evento para quitar canción individual (HU6 Criterio 1 y 3)
         item.querySelector('.btn-eliminar-cancion').addEventListener('click', () => {
             mostrarModalConfirmacion(
                 'Quitar Canción',
