@@ -2,6 +2,8 @@
 // VISTA / INTERFAZ DE USUARIO (js/ui.js)
 // ==========================================================================
 
+import { calcularEstadisticasPlaylist } from './utils.js';
+
 /**
  * HU1 - CRITERIO 2: Dibuja el spinner de carga en el contenedor.
  */
@@ -177,7 +179,7 @@ export function mostrarToast(mensaje) {
 }
 
 /**
- * HU4 - CRITERIO 1, 2 y 3: Renderiza el contenido detallado de la playlist activa.
+ * HU4 + HU5: Renderiza el contenido detallado de la playlist activa y sus estadísticas.
  * @param {HTMLElement} contenedor - El div de la vista de detalle.
  * @param {Object} playlist - La playlist seleccionada.
  */
@@ -190,11 +192,35 @@ export function renderizarDetallePlaylist(contenedor, playlist) {
     headerHTML.innerHTML = `
         <div>
             <h1>📂 ${playlist.nombre}</h1>
-            <span class="playlist-stats-basicas">${playlist.canciones.length} canciones guardadas</span>
         </div>
         <button id="boton-volver-buscador" class="boton-volver-buscador">🔍 Ir al Buscador</button>
     `;
     contenedor.appendChild(headerHTML);
+
+    // HU5 - CRITERIOS 1, 2 y 3: Cálculo y renderizado del panel de estadísticas
+    const stats = calcularEstadisticasPlaylist(playlist.canciones);
+
+    const statsContainer = document.createElement('div');
+    statsContainer.className = 'playlist-stats-panel';
+    statsContainer.innerHTML = `
+        <div class="stat-card">
+            <span class="stat-label">Canciones</span>
+            <span class="stat-value">${stats.totalCanciones}</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Duración Total</span>
+            <span class="stat-value">${stats.duracionTotal}</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Top Artista</span>
+            <span class="stat-value" title="${stats.artistaTop}">${stats.artistaTop}</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Top Género</span>
+            <span class="stat-value" title="${stats.generoTop}">${stats.generoTop}</span>
+        </div>
+    `;
+    contenedor.appendChild(statsContainer);
 
     // HU4 - CRITERIO 3: Si la playlist seleccionada está vacía, mostrar mensaje amigable
     if (playlist.canciones.length === 0) {

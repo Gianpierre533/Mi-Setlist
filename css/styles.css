@@ -592,3 +592,38 @@ body {
   font-size: 14px;
   color: var(--text-main);
 }
+/* ==========================================================================
+   HU5: ESTADÍSTICAS Y CONTROL DE TIEMPO DE PLAYLIST
+   ========================================================================== */
+.playlist-stats-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background-color: var(--bg-card, #181818);
+  border: 1px solid #282828;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-card .stat-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted, #b3b3b3);
+}
+
+.stat-card .stat-value {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--text-main, #ffffff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

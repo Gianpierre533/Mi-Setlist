@@ -17,6 +17,9 @@ export class Cancion {
         // Guardamos el género para las estadísticas del Sprint 2
         this.genero = trackData.primaryGenreName || 'Género Desconocido';
         
+        // Guardamos los milisegundos crudos para los cálculos de tiempo total (HU5)
+        this.duracionMs = trackData.trackTimeMillis || 0;
+
         // La API nos da la duración en milisegundos. La transformamos a formato MM:SS
         this.duracion = this.convertirMilisegundos(trackData.trackTimeMillis);
     }
