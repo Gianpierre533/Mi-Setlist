@@ -9,9 +9,9 @@
 
 ## Sprint 2 (Clase 19) — Meta: La playlist se gestiona de forma completa: quitar elementos, ordenar, ver estadísticas y robustez ante fallos
 
-- **HU6: Eliminación Segura de Canciones y Playlists** (Implementación de la limpieza de datos usando confirmación interactiva mediante un modal propio).
-- **HU7: Ordenamiento Personalizado de la Playlist** (Permite reorganizar dinámicamente la lista de canciones en pantalla por orden alfabético o fechas).
-- **HU5: Control de Tiempo y Estadísticas de la Playlist** (Cálculo acumulativo del tiempo en formato legible y renderizado de métricas de artistas/géneros).
+- **HU5: Eliminación Segura de Canciones y Playlists** (Implementación de la limpieza de datos usando confirmación interactiva mediante un modal propio).
+- **HU6: Ordenamiento Personalizado de la Playlist** (Permite reorganizar dinámicamente la lista de canciones en pantalla por orden alfabético o fechas).
+- **HU7: Control de Tiempo y Estadísticas de la Playlist** (Cálculo acumulativo del tiempo en formato legible y renderizado de métricas de artistas/géneros).
 - **HU8: Persistencia del Estado y Recuperación ante Fallos** (Cierre del ciclo de vida del estado de la app: validación de datos corruptos de LocalStorage y control de restauración segura "Empezar de cero").
 
 ---

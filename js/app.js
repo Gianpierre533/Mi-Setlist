@@ -159,4 +159,48 @@ document.addEventListener('DOMContentLoaded', () => {
             renderizarPlaylists(contenedorPlaylists, playlists, null);
         }
     });
+
+    // ==========================================================================
+    // HU6: ELIMINACIÓN REACCIÓN EN TIEMPO REAL
+    // ==========================================================================
+
+    // Escuchar eliminación de playlist
+    document.addEventListener('eliminarPlaylist', (e) => {
+        const { playlistId } = e.detail;
+        
+        // Filtrar la playlist eliminada
+        playlists = playlists.filter(p => p.id !== playlistId);
+        guardarEnLocalStorage();
+
+        // Si la playlist activa era la eliminada, resetear vista al buscador
+        if (idPlaylistSeleccionada === playlistId) {
+            cambiarVistaMain('buscador');
+        }
+
+        // Volver a renderizar sidebar y toast de confirmación
+        renderizarPlaylists(contenedorPlaylists, playlists, idPlaylistSeleccionada);
+        
+        // Si hay resultados de búsqueda previos, refrescar selects de playlists
+        if (ultimasCancionesBuscadas.length > 0) {
+            renderizarResultados(contenedorResultados, ultimasCancionesBuscadas, playlists);
+        }
+
+        mostrarToast('Playlist eliminada correctamente');
+    });
+
+    // Escuchar eliminación de canción de una playlist
+    document.addEventListener('quitarCancionPlaylist', (e) => {
+        const { playlistId, cancionId } = e.detail;
+        
+        const playlist = playlists.find(p => p.id === playlistId);
+        if (playlist) {
+            playlist.canciones = playlist.canciones.filter(c => c.id !== cancionId);
+            guardarEnLocalStorage();
+
+            // Re-renderizar detalle actualizado y sidebar
+            renderizarDetallePlaylist(contenedorVistaPlaylist, playlist);
+            renderizarPlaylists(contenedorPlaylists, playlists, idPlaylistSeleccionada);
+            mostrarToast('Canción quitada de la playlist');
+        }
+    });
 });

@@ -5,6 +5,47 @@
 import { calcularEstadisticasPlaylist } from './utils.js';
 
 /**
+ * HU6 - CRITERIO 3: Control del Modal de Confirmación Accesible
+ * @param {string} titulo - Título del modal.
+ * @param {string} mensaje - Mensaje descriptivo con HTML permitido.
+ * @param {Function} onConfirmar - Callback ejecutado al confirmar la acción.
+ */
+export function mostrarModalConfirmacion(titulo, mensaje, onConfirmar) {
+    const modal = document.getElementById('modal-confirmacion');
+    const txtTitulo = document.getElementById('modal-titulo');
+    const txtMensaje = document.getElementById('modal-mensaje');
+    const btnConfirmar = document.getElementById('modal-btn-confirmar');
+    const btnCancelar = document.getElementById('modal-btn-cancelar');
+
+    if (!modal) return;
+
+    txtTitulo.textContent = titulo;
+    txtMensaje.innerHTML = mensaje;
+
+    modal.classList.remove('ocultar');
+
+    const cerrarModal = () => {
+        modal.classList.add('ocultar');
+        btnConfirmar.onclick = null;
+        btnCancelar.onclick = null;
+        document.removeEventListener('keydown', manejarEsc);
+    };
+
+    const manejarEsc = (e) => {
+        if (e.key === 'Escape') cerrarModal();
+    };
+
+    btnCancelar.onclick = cerrarModal;
+
+    btnConfirmar.onclick = () => {
+        onConfirmar();
+        cerrarModal();
+    };
+
+    document.addEventListener('keydown', manejarEsc);
+}
+
+/**
  * HU1 - CRITERIO 2: Dibuja el spinner de carga en el contenedor.
  */
 export function mostrarCargando(contenedor) {
@@ -105,7 +146,7 @@ export function renderizarResultados(contenedor, canciones, playlists = []) {
 }
 
 /**
- * HU2 - CRITERIO 2 y 4: Renderiza las playlists en el Sidebar y resalta la activa.
+ * HU2 + HU6: Renderiza las playlists en el Sidebar con opción de eliminación.
  */
 export function renderizarPlaylists(contenedor, playlists, idPlaylistActiva = null) {
     contenedor.innerHTML = '';
@@ -129,17 +170,36 @@ export function renderizarPlaylists(contenedor, playlists, idPlaylistActiva = nu
         item.dataset.id = playlist.id;
 
         item.innerHTML = `
-            <span class="playlist-nombre">📂 ${playlist.nombre}</span>
-            <span class="playlist-info-secundaria">${playlist.canciones.length} canciones</span>
+            <div class="playlist-info-item" style="flex-grow: 1; cursor: pointer;">
+                <span class="playlist-nombre">📂 ${playlist.nombre}</span>
+                <span class="playlist-info-secundaria">${playlist.canciones.length} canciones</span>
+            </div>
+            <button class="btn-eliminar-playlist" title="Eliminar playlist" data-id="${playlist.id}">🗑️</button>
         `;
 
-        // Permitimos hacer clic en la playlist para seleccionarla
-        item.addEventListener('click', () => {
+        // Permitimos hacer clic en el nombre de la playlist para seleccionarla
+        item.querySelector('.playlist-info-item').addEventListener('click', () => {
             const eventoSeleccionar = new CustomEvent('seleccionarPlaylist', {
                 detail: { playlistId: playlist.id },
                 bubbles: true
             });
             item.dispatchEvent(eventoSeleccionar);
+        });
+
+        // Botón para eliminar playlist desde el Sidebar (HU6 Criterio 2 y 3)
+        item.querySelector('.btn-eliminar-playlist').addEventListener('click', (e) => {
+            e.stopPropagation();
+            mostrarModalConfirmacion(
+                'Eliminar Playlist',
+                `⚠️ ¿Deseas eliminar la playlist <strong>"${playlist.nombre}"</strong>? Esta acción no se puede deshacer.`,
+                () => {
+                    const eventoEliminar = new CustomEvent('eliminarPlaylist', {
+                        detail: { playlistId: playlist.id },
+                        bubbles: true
+                    });
+                    item.dispatchEvent(eventoEliminar);
+                }
+            );
         });
 
         listaHTML.appendChild(item);
@@ -179,27 +239,44 @@ export function mostrarToast(mensaje) {
 }
 
 /**
- * HU4 + HU5: Renderiza el contenido detallado de la playlist activa y sus estadísticas.
+ * HU4 + HU5 + HU6: Renderiza el contenido detallado de la playlist, estadísticas y acciones de eliminación.
  * @param {HTMLElement} contenedor - El div de la vista de detalle.
  * @param {Object} playlist - La playlist seleccionada.
  */
 export function renderizarDetallePlaylist(contenedor, playlist) {
     contenedor.innerHTML = '';
 
-    // Encabezado de la playlist
+    // Encabezado de la playlist con acción de eliminación (HU6 Criterio 2)
     const headerHTML = document.createElement('div');
     headerHTML.className = 'playlist-header-detalle';
     headerHTML.innerHTML = `
         <div>
             <h1>📂 ${playlist.nombre}</h1>
         </div>
-        <button id="boton-volver-buscador" class="boton-volver-buscador">🔍 Ir al Buscador</button>
+        <div class="header-acciones" style="display: flex; gap: 10px;">
+            <button id="btn-eliminar-playlist-header" class="btn-eliminar-header">🗑️ Eliminar Playlist</button>
+            <button id="boton-volver-buscador" class="boton-volver-buscador">🔍 Ir al Buscador</button>
+        </div>
     `;
     contenedor.appendChild(headerHTML);
 
-    // HU5 - CRITERIOS 1, 2 y 3: Cálculo y renderizado del panel de estadísticas
-    const stats = calcularEstadisticasPlaylist(playlist.canciones);
+    // Evento eliminar playlist desde la cabecera (HU6 Criterio 2 y 3)
+    headerHTML.querySelector('#btn-eliminar-playlist-header').addEventListener('click', () => {
+        mostrarModalConfirmacion(
+            'Eliminar Playlist',
+            `⚠️ ¿Deseas eliminar la playlist <strong>"${playlist.nombre}"</strong>? Esta acción no se puede deshacer.`,
+            () => {
+                const eventoEliminar = new CustomEvent('eliminarPlaylist', {
+                    detail: { playlistId: playlist.id },
+                    bubbles: true
+                });
+                headerHTML.dispatchEvent(eventoEliminar);
+            }
+        );
+    });
 
+    // HU5 - CRITERIOS 1, 2 y 3: Panel de estadísticas
+    const stats = calcularEstadisticasPlaylist(playlist.canciones);
     const statsContainer = document.createElement('div');
     statsContainer.className = 'playlist-stats-panel';
     statsContainer.innerHTML = `
@@ -222,7 +299,7 @@ export function renderizarDetallePlaylist(contenedor, playlist) {
     `;
     contenedor.appendChild(statsContainer);
 
-    // HU4 - CRITERIO 3: Si la playlist seleccionada está vacía, mostrar mensaje amigable
+    // HU4 - CRITERIO 3: Estado vacío
     if (playlist.canciones.length === 0) {
         const estadoVacio = document.createElement('p');
         estadoVacio.className = 'estado-vacio';
@@ -234,7 +311,7 @@ export function renderizarDetallePlaylist(contenedor, playlist) {
         return;
     }
 
-    // HU4 - CRITERIO 1 y 2: Renderizar canciones con título, artista, duración y fecha de adición
+    // HU4 + HU6: Renderizar canciones con botón de eliminación "✕" (HU6 Criterio 1 y 3)
     const listaHTML = document.createElement('ul');
     listaHTML.className = 'lista-canciones';
 
@@ -242,7 +319,6 @@ export function renderizarDetallePlaylist(contenedor, playlist) {
         const item = document.createElement('li');
         item.className = 'item-cancion';
 
-        // Formateamos la fecha a formato legible (ej. 21 de jul. de 2026)
         const fechaFormateada = cancion.fechaAgregada 
             ? new Date(cancion.fechaAgregada).toLocaleDateString('es-ES', { 
                 day: 'numeric', 
@@ -263,7 +339,25 @@ export function renderizarDetallePlaylist(contenedor, playlist) {
                 <span class="cancion-duracion-badge">${cancion.duracion}</span>
                 <span class="cancion-fecha-agregada">Agregado el ${fechaFormateada}</span>
             </div>
+            <div class="cancion-acciones">
+                <button class="btn-eliminar-cancion" title="Quitar canción de la playlist">✕</button>
+            </div>
         `;
+
+        // Evento para quitar canción individual
+        item.querySelector('.btn-eliminar-cancion').addEventListener('click', () => {
+            mostrarModalConfirmacion(
+                'Quitar Canción',
+                `¿Estás seguro de que deseas eliminar <strong>"${cancion.titulo}"</strong> de esta playlist?`,
+                () => {
+                    const eventoQuitar = new CustomEvent('quitarCancionPlaylist', {
+                        detail: { playlistId: playlist.id, cancionId: cancion.id },
+                        bubbles: true
+                    });
+                    item.dispatchEvent(eventoQuitar);
+                }
+            );
+        });
 
         listaHTML.appendChild(item);
     });

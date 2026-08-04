@@ -627,3 +627,147 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* ==========================================================================
+   HU6: MODAL ACCESIBLE Y BOTONES DE ELIMINACIÓN
+   ========================================================================== */
+
+/* Botón de eliminar canción (✕) */
+.btn-eliminar-cancion {
+  background: transparent;
+  border: none;
+  color: #b3b3b3;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-eliminar-cancion:hover {
+  color: #ff5555;
+  background-color: rgba(255, 85, 85, 0.1);
+}
+
+/* Botón de eliminar playlist (Sidebar y Header) */
+.btn-eliminar-playlist {
+  background: transparent;
+  border: none;
+  color: #b3b3b3;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+}
+
+.btn-eliminar-playlist:hover {
+  color: #ff5555;
+}
+
+.item-playlist {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn-eliminar-header {
+  background-color: transparent;
+  border: 1px solid #ff5555;
+  color: #ff5555;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-eliminar-header:hover {
+  background-color: #ff5555;
+  color: #ffffff;
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  transition: opacity 0.2s ease;
+}
+
+.modal-backdrop.ocultar {
+  display: none;
+}
+
+.modal-contenido {
+  background-color: var(--bg-card, #181818);
+  border: 1px solid #333333;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-contenido h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #ffffff;
+}
+
+.modal-contenido p {
+  margin: 0;
+  font-size: 14px;
+  color: #b3b3b3;
+  line-height: 1.5;
+}
+
+.modal-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.btn-secundario {
+  background-color: transparent;
+  border: 1px solid #444444;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-secundario:hover {
+  background-color: #333333;
+}
+
+.btn-peligro {
+  background-color: #e50914;
+  border: none;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.btn-peligro:hover {
+  background-color: #b80710;
+}
