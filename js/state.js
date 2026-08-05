@@ -1,1 +1,0 @@
-// Archivo reservado para estado global si fuera necesario
