@@ -6,17 +6,19 @@ import {
     renderizarPlaylists,
     alternarAdvertenciaPlaylist,
     mostrarToast,
-    renderizarDetallePlaylist
+    renderizarDetallePlaylist,
+    mostrarPantallaErrorDatos
 } from './ui.js';
+import { cargarPlaylists, guardarPlaylists, limpiarStorage } from './storage.js';
 
 // ESTADO GLOBAL DE LA APLICACIÓN
-let playlists = JSON.parse(localStorage.getItem('playlists')) || [];
+let playlists = [];
 let ultimasCancionesBuscadas = [];
-let idPlaylistSeleccionada = null; // Guarda cuál playlist está viendo el usuario
-let criteriosOrdenPlaylists = {}; // HU7: Almacena el criterio de ordenamiento activo por cada playlistId ('recientes', 'antiguas', 'az', 'za')
+let idPlaylistSeleccionada = null;
+let criteriosOrdenPlaylists = {}; // HU7: Almacena el criterio de ordenamiento activo por cada playlistId
 
 function guardarEnLocalStorage() {
-    localStorage.setItem('playlists', JSON.stringify(playlists));
+    guardarPlaylists(playlists);
 }
 
 /**
@@ -47,12 +49,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const advertenciaPlaylist = document.getElementById('advertencia-playlist');
     const contenedorPlaylists = document.getElementById('lista-playlists');
     const contenedorVistaPlaylist = document.getElementById('vista-playlist');
-
-    // Carga inicial de playlists
-    renderizarPlaylists(contenedorPlaylists, playlists, idPlaylistSeleccionada);
+    const appLayout = document.querySelector('.app-layout');
 
     // ==========================================================================
-    // HU2: CREAR PLAYLIST
+    // HU8 - CRITERIO 1 y 2: Cargar playlists al inicio con manejo de fallos.
+    // Si el JSON está corrupto, se captura el error y se muestra la pantalla
+    // de recuperación en lugar de dejar la app congelada o en blanco.
+    // ==========================================================================
+    try {
+        playlists = cargarPlaylists();
+        renderizarPlaylists(contenedorPlaylists, playlists, idPlaylistSeleccionada);
+    } catch (error) {
+        // HU8 - CRITERIO 2 y 3: Datos corruptos — mostrar panel de error y no continuar
+        console.error('Error al cargar los datos guardados:', error);
+
+        mostrarPantallaErrorDatos(appLayout, () => {
+            // HU8 - CRITERIO 4: Limpiar storage y recargar la página al estado inicial vacío
+            limpiarStorage();
+            location.reload();
+        });
+
+        return; // Detiene la inicialización normal de la app
+    }
+
+    // ==========================================================================
+    // HU2: CREAR PLAYLIST (Actualización Inmutable)
     // ==========================================================================
     formularioPlaylist.addEventListener('submit', (evento) => {
         evento.preventDefault();
@@ -71,7 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
             canciones: []
         };
 
-        playlists.push(nuevaPlaylist);
+        // Actualización inmutable sin mutación directa (.push)
+        playlists = [...playlists, nuevaPlaylist];
         guardarEnLocalStorage();
 
         renderizarPlaylists(contenedorPlaylists, playlists, idPlaylistSeleccionada);
@@ -108,29 +130,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================================================
-    // HU3: GUARDAR CANCIÓN EN PLAYLIST
+    // HU3: GUARDAR CANCIÓN EN PLAYLIST (Actualización Inmutable)
     // ==========================================================================
     contenedorResultados.addEventListener('agregarACancion', (evento) => {
         const { cancion, playlistId } = evento.detail;
-        const playlistDestino = playlists.find(p => p.id === playlistId);
 
-        if (playlistDestino) {
+        // Actualización inmutable usando map y spread
+        playlists = playlists.map(playlist => {
+            if (playlist.id !== playlistId) return playlist;
+
             const cancionConFecha = {
                 ...cancion,
                 fechaAgregada: new Date().toISOString()
             };
 
-            playlistDestino.canciones.push(cancionConFecha);
-            guardarEnLocalStorage();
+            return {
+                ...playlist,
+                canciones: [...playlist.canciones, cancionConFecha]
+            };
+        });
 
-            renderizarPlaylists(contenedorPlaylists, playlists, idPlaylistSeleccionada);
+        guardarEnLocalStorage();
+        renderizarPlaylists(contenedorPlaylists, playlists, idPlaylistSeleccionada);
 
-            // Si estamos viendo esa playlist actualmente, refrescamos la pantalla manteniendo el criterio de orden activo
+        const playlistDestino = playlists.find(p => p.id === playlistId);
+        if (playlistDestino) {
             if (idPlaylistSeleccionada === playlistId) {
                 const criterioActual = criteriosOrdenPlaylists[playlistId] || 'recientes';
                 renderizarDetallePlaylist(contenedorVistaPlaylist, playlistDestino, criterioActual);
             }
-
             mostrarToast(`Añadida "${cancion.titulo}" a ${playlistDestino.nombre}`);
         }
     });
@@ -189,7 +217,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('eliminarPlaylist', (e) => {
         const { playlistId } = e.detail;
         
-        // Filtrar la playlist eliminada
         playlists = playlists.filter(p => p.id !== playlistId);
         delete criteriosOrdenPlaylists[playlistId]; // Limpiar registro de criterio
         guardarEnLocalStorage();
@@ -199,10 +226,8 @@ document.addEventListener('DOMContentLoaded', () => {
             cambiarVistaMain('buscador');
         }
 
-        // Volver a renderizar sidebar y toast de confirmación
         renderizarPlaylists(contenedorPlaylists, playlists, idPlaylistSeleccionada);
         
-        // Si hay resultados de búsqueda previos, refrescar selects de playlists
         if (ultimasCancionesBuscadas.length > 0) {
             renderizarResultados(contenedorResultados, ultimasCancionesBuscadas, playlists);
         }
@@ -210,20 +235,27 @@ document.addEventListener('DOMContentLoaded', () => {
         mostrarToast('Playlist eliminada correctamente');
     });
 
-    // Escuchar eliminación de canción de una playlist
+    // Escuchar eliminación de canción de una playlist (Inmutable)
     document.addEventListener('quitarCancionPlaylist', (e) => {
         const { playlistId, cancionId } = e.detail;
         
-        const playlist = playlists.find(p => p.id === playlistId);
-        if (playlist) {
-            playlist.canciones = playlist.canciones.filter(c => c.id !== cancionId);
-            guardarEnLocalStorage();
+        playlists = playlists.map(playlist => {
+            if (playlist.id !== playlistId) return playlist;
+            return {
+                ...playlist,
+                canciones: playlist.canciones.filter(c => c.id !== cancionId)
+            };
+        });
 
-            // Re-renderizar detalle actualizado manteniendo el criterio de orden activo
+        guardarEnLocalStorage();
+
+        const playlistActualizada = playlists.find(p => p.id === playlistId);
+        if (playlistActualizada) {
             const criterioActual = criteriosOrdenPlaylists[playlistId] || 'recientes';
-            renderizarDetallePlaylist(contenedorVistaPlaylist, playlist, criterioActual);
-            renderizarPlaylists(contenedorPlaylists, playlists, idPlaylistSeleccionada);
-            mostrarToast('Canción quitada de la playlist');
+            renderizarDetallePlaylist(contenedorVistaPlaylist, playlistActualizada, criterioActual);
         }
+
+        renderizarPlaylists(contenedorPlaylists, playlists, idPlaylistSeleccionada);
+        mostrarToast('Canción quitada de la playlist');
     });
 });

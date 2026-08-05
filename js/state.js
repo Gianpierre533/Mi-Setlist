@@ -1,1 +1,1 @@
-export const mensaje = 'Módulos ESM funcionando ✅';
+// Archivo reservado para estado global si fuera necesario

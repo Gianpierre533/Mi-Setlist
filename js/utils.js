@@ -1,6 +1,24 @@
 // FUNCIONES AUXILIARES Y CÁLCULOS (js/utils.js)
 
 /**
+ * Formatea una fecha (string ISO o Date) a un texto legible (ej: 21 de jul. de 2026).
+ * @param {string|Date} fecha 
+ * @returns {string}
+ */
+export function formatearFecha(fecha) {
+  if (!fecha) return 'Fecha desconocida';
+  
+  const d = new Date(fecha);
+  if (isNaN(d.getTime())) return 'Fecha desconocida';
+
+  return d.toLocaleDateString('es-ES', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  });
+}
+
+/**
  * Convierte milisegundos acumulados a un formato legible ("X min" o "X h Y min").
  * @param {number} msTotal 
  * @returns {string}

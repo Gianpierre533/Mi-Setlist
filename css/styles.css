@@ -410,9 +410,10 @@ body {
 }
 
 .item-cancion {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
   align-items: center;
+  gap: 16px;
   padding: 10px 16px;
   border-radius: var(--radius-md);
   transition: all var(--transition-smooth);
@@ -471,6 +472,9 @@ body {
   font-size: 13px;
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
+  text-align: right;
+  min-width: 40px;
+  white-space: nowrap;
 }
 
 /* ==========================================================================
@@ -550,7 +554,7 @@ body {
 }
 
 .select-playlist {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: #1e1e2e;
   color: var(--text-main);
   border: 1px solid var(--border-subtle);
   padding: 8px 14px;
@@ -560,6 +564,11 @@ body {
   outline: none;
   cursor: pointer;
   transition: all var(--transition-smooth);
+}
+
+.select-playlist option {
+  background-color: #1e1e2e;
+  color: var(--text-main);
 }
 
 .select-playlist:hover:not(:disabled) {
@@ -1085,4 +1094,76 @@ body {
     align-items: flex-start;
     gap: 16px;
   }
+}
+/* ==========================================================================
+   HU8: PERSISTENCIA DEL ESTADO Y RECUPERACIÓN ANTE FALLOS
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   HU8 - CRITERIO 2 y 3: Panel de error para datos corruptos en localStorage
+   -------------------------------------------------------------------------- */
+.panel-error-datos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100vh;
+    padding: 40px;
+    background: var(--bg-dark);
+    gap: 16px;
+}
+
+.panel-error-icono {
+    font-size: 56px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.panel-error-titulo {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--danger);
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.panel-error-descripcion {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 480px;
+    margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   HU8 - CRITERIO 3: Botón destacado "Empezar de cero"
+   -------------------------------------------------------------------------- */
+.btn-empezar-de-cero {
+    margin-top: 12px;
+    background-color: var(--danger);
+    color: #ffffff;
+    border: none;
+    padding: 14px 32px;
+    border-radius: var(--radius-full);
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
+}
+
+.btn-empezar-de-cero:hover {
+    background-color: var(--danger-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.45);
+}
+
+.btn-empezar-de-cero:active {
+    transform: translateY(0);
 }
