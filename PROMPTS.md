@@ -1,40 +1,52 @@
-## [2026-07-16] — Descomposición del MVP en HUs
+# Registro de Prompts - Mi Setlist 🎵
 
-**Para qué:** derivar mis historias de usuario.
+Este documento resume las interacciones clave y el flujo de trabajo colaborativo con la IA durante el desarrollo del proyecto.
 
-**Prompt:**
-[CONTEXTO]
-Estoy construyendo "Mi Setlist", una aplicación web que permita buscar canciones en un catálogo real (API de iTunes) y organizarlas en playlists personales que sobreviven al recargar la página. La app calcula la duración total de cada playlist y muestra estadísticas de tu música.
+---
 
-Stack: HTML5 semántico + CSS3 (propio o Tailwind Play CDN, a tu criterio) + JavaScript vanilla con módulos ESM (import/export, <script type="module">).
-Arquitectura: estado central plano + patrón “cambias el estado → llamas render()”. CRUD inmutable (.filter/.map/spread). Delegación de eventos para las listas. Ids con crypto.randomUUID().
-Persistencia: localStorage + JSON.stringify/parse envueltos en try/catch; fechas rehidratadas al cargar.
-UX: confirmaciones con modal propio (nada de confirm() nativo); estados vacíos amigables.
-API: iTunes Search API (solo lectura, sin key).
-Deploy: GitHub Pages. ESM no corre con file:// → usar Live Server.
+## [2026-07-16] — Descomposición del MVP en Historias de Usuario
+- **Para qué:** Derivar las 8 Historias de Usuario iniciales con sus criterios de aceptación a partir de los requerimientos del MVP.
+- **Prompt:** "Actúa como Product Owner y descompón mi MVP de 'Mi Setlist' en 8 HUs con criterios de aceptación observables para 2 sprints."
+- **Resultado:** La IA generó la estructura base de las 8 HUs en formato 'Como / Quiero / Para' y sus criterios de aceptación.
 
-No se permite: frameworks JS (React, Vue…), librerías de manejo de estado, backend, copiar código de la IA sin registrarlo en PROMPTS.md.
+---
 
-El MVP tiene estas 10 funcionalidades:
+## [2026-07-16] — Arquitectura ESM y Búsqueda iTunes (HU1)
+- **Para qué:** Diseñar la arquitectura modular en JS (ESM) y conectar de forma asíncrona la API de iTunes.
+- **Prompt:** "Genera la estructura ESM para HU1: modelo Cancion, servicio api.js con fetch/async-await y funciones UI para renderizar spinner y lista."
+- **Resultado:** Aprendí a desacoplar la llamada a la API (`api.js`) del renderizado del DOM (`ui.js`) utilizando clases ES6.
 
-1. Buscar canciones por artista o título en la API, mostrando carátula, nombre, artista y duración.
-2. Comunicar el estado de la búsqueda: indicador de carga, mensaje de error si la API falla, mensaje amigable si no hay resultados.
-3. Crear playlists con nombre propio (ej: “Road trip”, “Ensayo sábado”).
-4. Agregar canciones desde los resultados de búsqueda a una playlist.
-5. Ver el contenido de una playlist con los datos de cada canción y la fecha en que se agregó.
-6. Quitar canciones y eliminar playlists con confirmación previa (modal propio).
-7. Ver la duración total de la playlist en formato legible (ej: “1 h 23 min”).
-8. Ver estadísticas de la playlist: cantidad de canciones, género más frecuente, artista más repetido.
-9. Ordenar las canciones de una playlist (recientes/antiguas, alfabético).
-10. Persistir todo en LocalStorage y restaurar al recargar; si los datos están corruptos, la app no se rompe y ofrece “Empezar de cero”.
+---
 
-[TAREA]
-Pídele descomponer el MVP en historias de usuario para UNA persona desarrollando en 2 sprints de una sesión cada uno.
+## [2026-07-16] — Maquetación en 2 Columnas y Gestión de Playlists (HU2)
+- **Para qué:** Diseñar la interfaz estilo plataforma de streaming con sidebar para crear y listar playlists.
+- **Prompt:** "Diseña una distribución HTML/CSS de 2 columnas estilo Spotify, con formulario en el sidebar y validación visual de nombre vacío."
+- **Resultado:** La IA ayudó a estructurar la maquetación flexbox y a gestionar las alertas visuales para campos vacíos.
 
-[FORMATO]
-Historia ("Como... quiero... para...") + 3-5 criterios de aceptación.
+---
 
-[RESTRICCIÓN]
-Los criterios describen RESULTADOS observables en pantalla, no implementación. Nada fuera del MVP.
+## [2026-07-21] — Guardado y Detalle de Playlists (HU3 y HU4)
+- **Para qué:** Asociar canciones del buscador a playlists y visualizar su contenido con metadatos y fechas de adición.
+- **Prompt:** "Implementa la lógica para asociar canciones a playlists con notificación Toast y la vista de detalle con fechas formateadas."
+- **Resultado:** La IA ayudó a desacoplar la interacción mediante `CustomEvent` y a formatear fechas en texto legible.
 
-**Resultado:** base de mis 8 HUs; ajusté criterios y alcance a mano.
+---
+
+## [2026-07-28] — Estadísticas, Eliminación y Ordenamiento (HU5, HU6 y HU7)
+- **Para qué:** Calcular tiempo acumulado, eliminar elementos con modal propio y ordenar la lista por fecha o título.
+- **Prompt:** "Agrega el cálculo de estadísticas puras con reduce, eliminación segura mediante modal accesible y ordenamiento reactivo con sort."
+- **Resultado:** Aprendí a calcular métricas sobre arreglos de objetos y a gestionar confirmaciones interactivas sin usar `confirm()` nativo.
+
+---
+
+## [2026-08-04] — Persistencia y Recuperación ante Datos Corruptos (HU8)
+- **Para qué:** Garantizar la resiliencia del estado ante datos malformados o alterados en `localStorage`.
+- **Prompt:** "Envuelve la carga inicial en try/catch y crea una pantalla de recuperación con el botón 'Empezar de cero' si el JSON está corrupto."
+- **Resultado:** Logré asegurar que la app nunca se congele ni se quede en blanco ante fallos de lectura en el almacenamiento local.
+
+---
+
+## [2026-08-04] — Auditoría de Código y Feature Propia (HU9 y HU10)
+- **Para qué:** Corregir hallazgos de code review (mutaciones e inmutabilidad) y definir 2 HUs propias para el Demo Day.
+- **Prompt:** "Audita mi código en busca de mutaciones directas de arreglo y propone 2 HUs propias para el producto final."
+- **Resultado:** Refactoricé el manejo de estado a sintaxis inmutable (`[...array]`) e implementé el buscador interno en la playlist (HU9).
