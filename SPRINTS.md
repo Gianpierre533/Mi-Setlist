@@ -1,4 +1,4 @@
-## Sprint 1 (Clase 18) — Meta: Busco una canción y la agrego a una playlist que sobrevive al recargar
+## Sprint 1 (Clase 18) — Meta: Busco una canción y la agrego a una playlist que sobrevive al recargar (CERRADO)
 
 - **HU1: Búsqueda Interactiva de Canciones** (Va primero: casi todo depende de tener resultados en pantalla).
 - **HU2: Creación de Playlists Personalizadas** (La estructura para almacenar y listar los contenedores de las canciones).
@@ -7,12 +7,21 @@
 
 ---
 
-## Sprint 2 (Clase 19) — Meta: La playlist se gestiona de forma completa: quitar elementos, ordenar, ver estadísticas y robustez ante fallos
+## Sprint 2 (Clase 19) — Meta: La playlist se gestiona de forma completa: quitar elementos, ordenar, ver estadísticas y robustez ante fallos (CERRADO Y AUDITADO)
+
+* **Confirmación de Plan:** Plan completado — Auditoría ejecutada con hallazgos críticos corregidos (recuperación de datos corruptos probada) y sin hallazgos mayores pendientes.
 
 - **HU5: Control de Tiempo y Estadísticas de la Playlist** (Cálculo acumulativo del tiempo en formato legible y renderizado de métricas de artistas/géneros).
 - **HU6: Eliminación Segura de Canciones y Playlists** (Implementación de la limpieza de datos usando confirmación interactiva mediante un modal propio).
 - **HU7: Ordenamiento Personalizado de la Playlist** (Permite reorganizar dinámicamente la lista de canciones en pantalla por orden alfabético o fechas).
 - **HU8: Persistencia del Estado y Recuperación ante Fallos** (Cierre del ciclo de vida del estado de la app: validación de datos corruptos de LocalStorage y control de restauración segura "Empezar de cero").
+
+---
+
+## Historias de Usuario Propias (Demo Day / Entrega Final)
+
+- **HU9: Filtrado Rápido de Canciones en la Playlist Activa [x] (Entregada):** Permite buscar y filtrar temas en tiempo real dentro de la playlist activa.
+- **HU10: Marcar y Filtrar Canciones Favoritas [ ] (Pendiente Post Demo Day):** Botón de corazón para destacar canciones y filtro exclusivo de favoritas.
 
 ---
 
