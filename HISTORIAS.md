@@ -102,3 +102,28 @@ Este documento detalla las 8 Historias de Usuario que componen el MVP de la apli
 - **Criterio 2:** Si los datos guardados en el dispositivo se corrompen o están alterados de forma que impidan el inicio de la app, esta no se queda en blanco ni se congela con un error.
 - **Criterio 3:** Ante datos dañados, la interfaz muestra un cuadro informativo de error y ofrece un botón destacado que dice "Empezar de cero".
 - **Criterio 4:** Al pulsar el botón "Empezar de cero", la pantalla se limpia por completo regresando al estado inicial vacío, lista para volver a crear playlists sin errores.
+
+---
+
+### HU9: Filtrado Rápido de Canciones en la Playlist Activa [x] (Elegida e Implementada)
+
+**Como** melómano con playlists extensas,  
+**Quiero** filtrar las canciones de mi playlist activa escribiendo en un buscador interno,  
+**Para** encontrar rápidamente un tema o artista específico sin recorrer toda la lista.
+
+- **Criterio 1:** En la barra de herramientas de la playlist activa se presenta un campo de búsqueda de texto ("Filtrar canciones...").
+- **Criterio 2:** Al escribir en el buscador interno, la lista de canciones se actualiza instantáneamente en pantalla mostrando solo los temas cuyo título o artista coincida con el texto ingresado.
+- **Criterio 3:** Si el filtro no arroja coincidencias dentro de la playlist, se muestra un mensaje amigable indicando que no se encontraron temas que coincidan con la búsqueda.
+
+---
+
+### HU10: Marcar y Filtrar Canciones Favoritas [ ] (Propuesta Propia 2)
+
+**Como** usuario frecuente de la aplicación,  
+**Quiero** hacer clic en un ícono de corazón para marcar o desmarcar canciones como favoritas dentro de mis playlists,  
+**Para** destacar y acceder fácilmente a mis temas preferidos.
+
+- **Criterio 1:** Cada canción en el detalle de una playlist incluye un botón interactivo de corazón (❤️ / 🤍) para marcarla o desmarcarla como favorita.
+- **Criterio 2:** El estado de favorita de una canción se persiste automáticamente en `localStorage`.
+- **Criterio 3:** En la barra de herramientas de la playlist se ofrece un conmutador "Ver solo favoritas" que filtra la lista en pantalla mostrando únicamente los temas destacados.
+

@@ -2,7 +2,7 @@
 // VISTA / INTERFAZ DE USUARIO (js/ui.js)
 // ==========================================================================
 
-import { calcularEstadisticasPlaylist } from './utils.js';
+import { calcularEstadisticasPlaylist, formatearFecha } from './utils.js';
 
 /**
  * HU6 - CRITERIO 3: Control del Modal de Confirmación Accesible
@@ -10,7 +10,7 @@ import { calcularEstadisticasPlaylist } from './utils.js';
  * @param {string} mensaje - Mensaje descriptivo con HTML permitido.
  * @param {Function} onConfirmar - Callback ejecutado al confirmar la acción.
  */
-export function mostrarModalConfirmacion(titulo, mensaje, onConfirmar) {
+function mostrarModalConfirmacion(titulo, mensaje, onConfirmar) {
     const modal = document.getElementById('modal-confirmacion');
     const txtTitulo = document.getElementById('modal-titulo');
     const txtMensaje = document.getElementById('modal-mensaje');
@@ -315,22 +315,39 @@ export function renderizarDetallePlaylist(contenedor, playlist, criterioOrden = 
     }
 
     // =========================================================================
-    // HU7 - CRITERIO 1 Y 2: Controles y lógica de Ordenamiento Personalizado
+    // HU7 & HU9: Controles de Ordenamiento y Filtrado Rápido en Playlist
     // =========================================================================
     const contenedorOrden = document.createElement('div');
     contenedorOrden.className = 'playlist-controles-orden';
+    contenedorOrden.style.display = 'flex';
+    contenedorOrden.style.justifyContent = 'space-between';
+    contenedorOrden.style.alignItems = 'center';
+    contenedorOrden.style.gap = '12px';
+    contenedorOrden.style.flexWrap = 'wrap';
+
     contenedorOrden.innerHTML = `
-        <label for="select-ordenar" class="orden-label">⇅ Ordenar por:</label>
-        <select id="select-ordenar" class="select-ordenar" data-playlist-id="${playlist.id}">
-            <option value="recientes" ${criterioOrden === 'recientes' ? 'selected' : ''}>Más recientes primero</option>
-            <option value="antiguas" ${criterioOrden === 'antiguas' ? 'selected' : ''}>Más antiguas primero</option>
-            <option value="az" ${criterioOrden === 'az' ? 'selected' : ''}>Título (A - Z)</option>
-            <option value="za" ${criterioOrden === 'za' ? 'selected' : ''}>Título (Z - A)</option>
-        </select>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <label for="select-ordenar" class="orden-label">⇅ Ordenar por:</label>
+            <select id="select-ordenar" class="select-ordenar" data-playlist-id="${playlist.id}">
+                <option value="recientes" ${criterioOrden === 'recientes' ? 'selected' : ''}>Más recientes primero</option>
+                <option value="antiguas" ${criterioOrden === 'antiguas' ? 'selected' : ''}>Más antiguas primero</option>
+                <option value="az" ${criterioOrden === 'az' ? 'selected' : ''}>Título (A - Z)</option>
+                <option value="za" ${criterioOrden === 'za' ? 'selected' : ''}>Título (Z - A)</option>
+            </select>
+        </div>
+        <div style="margin-left: auto;">
+            <input 
+                type="text" 
+                id="input-filtrar-playlist" 
+                placeholder="🔍 Filtrar en playlist..." 
+                class="select-ordenar" 
+                style="width: 200px; padding-right: 14px;" 
+            />
+        </div>
     `;
     contenedor.appendChild(contenedorOrden);
 
-    // Evento HU7 Criterio 3: Reorganización reactiva mediante Evento Personalizado
+    // Evento HU7 Criterio 3: Reorganización reactiva
     contenedorOrden.querySelector('#select-ordenar').addEventListener('change', (e) => {
         const nuevoCriterio = e.target.value;
         const eventoCambiarOrden = new CustomEvent('cambiarOrdenPlaylist', {
@@ -360,56 +377,107 @@ export function renderizarDetallePlaylist(contenedor, playlist, criterioOrden = 
             break;
     }
 
-    // HU4 + HU6: Renderizar lista de canciones ordenadas
-    const listaHTML = document.createElement('ul');
-    listaHTML.className = 'lista-canciones';
+    const contenedorLista = document.createElement('div');
+    contenedorLista.className = 'contenedor-lista-playlist';
+    contenedor.appendChild(contenedorLista);
 
-    cancionesOrdenadas.forEach(cancion => {
-        const item = document.createElement('li');
-        item.className = 'item-cancion';
+    function renderizarLista(query = '') {
+        contenedorLista.innerHTML = '';
+        const q = query.trim().toLowerCase();
+        
+        const cancionesVisibles = q 
+            ? cancionesOrdenadas.filter(c => 
+                c.titulo.toLowerCase().includes(q) || 
+                c.artista.toLowerCase().includes(q)
+              )
+            : cancionesOrdenadas;
 
-        const fechaFormateada = cancion.fechaAgregada 
-            ? new Date(cancion.fechaAgregada).toLocaleDateString('es-ES', { 
-                day: 'numeric', 
-                month: 'short', 
-                year: 'numeric' 
-              })
-            : 'Fecha desconocida';
+        if (cancionesVisibles.length === 0) {
+            contenedorLista.innerHTML = `
+                <p class="estado-vacio">
+                    🔍 No se encontraron canciones que coincidan con "${query}".
+                </p>
+            `;
+            return;
+        }
 
-        item.innerHTML = `
-            <div class="cancion-info">
-                <img src="${cancion.caratula}" alt="Carátula de ${cancion.titulo}" class="cancion-caratula">
-                <div class="cancion-detalles">
-                    <span class="cancion-titulo">${cancion.titulo}</span>
-                    <span class="cancion-artista">${cancion.artista}</span>
+        const listaHTML = document.createElement('ul');
+        listaHTML.className = 'lista-canciones';
+
+        cancionesVisibles.forEach(cancion => {
+            const item = document.createElement('li');
+            item.className = 'item-cancion';
+            const fechaFormateada = formatearFecha(cancion.fechaAgregada);
+
+            item.innerHTML = `
+                <div class="cancion-info">
+                    <img src="${cancion.caratula}" alt="Carátula de ${cancion.titulo}" class="cancion-caratula">
+                    <div class="cancion-detalles">
+                        <span class="cancion-titulo">${cancion.titulo}</span>
+                        <span class="cancion-artista">${cancion.artista}</span>
+                    </div>
                 </div>
-            </div>
-            <div class="cancion-metadatos-playlist">
-                <span class="cancion-duracion-badge">${cancion.duracion}</span>
-                <span class="cancion-fecha-agregada">Agregado el ${fechaFormateada}</span>
-            </div>
-            <div class="cancion-acciones">
-                <button class="btn-eliminar-cancion" title="Quitar canción de la playlist">✕</button>
-            </div>
-        `;
+                <div class="cancion-metadatos-playlist">
+                    <span class="cancion-duracion-badge">${cancion.duracion}</span>
+                    <span class="cancion-fecha-agregada">Agregado el ${fechaFormateada}</span>
+                </div>
+                <div class="cancion-acciones">
+                    <button class="btn-eliminar-cancion" title="Quitar canción de la playlist">✕</button>
+                </div>
+            `;
 
-        // Evento para quitar canción individual (HU6 Criterio 1 y 3)
-        item.querySelector('.btn-eliminar-cancion').addEventListener('click', () => {
-            mostrarModalConfirmacion(
-                'Quitar Canción',
-                `¿Estás seguro de que deseas eliminar <strong>"${cancion.titulo}"</strong> de esta playlist?`,
-                () => {
-                    const eventoQuitar = new CustomEvent('quitarCancionPlaylist', {
-                        detail: { playlistId: playlist.id, cancionId: cancion.id },
-                        bubbles: true
-                    });
-                    item.dispatchEvent(eventoQuitar);
-                }
-            );
+            item.querySelector('.btn-eliminar-cancion').addEventListener('click', () => {
+                mostrarModalConfirmacion(
+                    'Quitar Canción',
+                    `¿Estás seguro de que deseas eliminar <strong>"${cancion.titulo}"</strong> de esta playlist?`,
+                    () => {
+                        const eventoQuitar = new CustomEvent('quitarCancionPlaylist', {
+                            detail: { playlistId: playlist.id, cancionId: cancion.id },
+                            bubbles: true
+                        });
+                        item.dispatchEvent(eventoQuitar);
+                    }
+                );
+            });
+
+            listaHTML.appendChild(item);
         });
 
-        listaHTML.appendChild(item);
+        contenedorLista.appendChild(listaHTML);
+    }
+
+    // Evento HU9: Escuchar búsqueda en tiempo real dentro de la playlist
+    const inputFiltro = contenedorOrden.querySelector('#input-filtrar-playlist');
+    inputFiltro.addEventListener('input', (e) => {
+        renderizarLista(e.target.value);
     });
 
-    contenedor.appendChild(listaHTML);
+    // Render inicial
+    renderizarLista();
+}
+  // =========================================================================
+    // HU8 -  CRITERIO 2 y 3
+    // =========================================================================
+export function mostrarPantallaErrorDatos(contenedor, onReiniciar) {
+    contenedor.innerHTML = `
+        <div class="panel-error-datos">
+            <div class="panel-error-icono">⚠️</div>
+            <h2 class="panel-error-titulo">Datos dañados detectados</h2>
+            <p class="panel-error-descripcion">
+                Los datos guardados en tu dispositivo están corruptos o no se pudieron leer correctamente.
+                La aplicación no puede continuar con estos datos.
+            </p>
+            <p class="panel-error-descripcion">
+                Puedes eliminar los datos dañados y empezar desde cero. 
+                <strong>Esta acción no se puede deshacer.</strong>
+            </p>
+            <button id="boton-empezar-de-cero" class="btn-empezar-de-cero">
+                🗑️ Empezar de cero
+            </button>
+        </div>
+    `;
+    // HU8 - CRITERIO 4: Al pulsar el botón, ejecutar el callback de reinicio
+    contenedor.querySelector('#boton-empezar-de-cero').addEventListener('click', () => {
+        onReiniciar();
+    });
 }
